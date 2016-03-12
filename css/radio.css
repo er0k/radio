@@ -1,0 +1,12 @@
+.currentSong {
+    background-color: #ccc;
+    color: black;
+}
+
+.playlist li:nth-child(even) {
+    color: #aaa;
+}
+
+.filename {
+    font-size: 75%;
+}

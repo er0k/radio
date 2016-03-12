@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" ng-app="radio">
+<head>
+    <meta charset="utf-8">
+    <title>radio</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/radio.css">
+    <script src="js/angular.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/animate.js"></script>
+    <script src="js/radio.js"></script>
+</head>
+<body ng-controller="dj">
+
+    <div class="container">
+        <div class="song">
+            <uib-progressbar max="100" value="percent">
+                <span>{{status.elapsed}} / {{song.Time}}</span>
+            </uib-progressbar>
+            <span class="arist"><a popover-placement="bottom" uib-popover="{{song.Artist}}" href="#">{{song.Artist}}</a></span>
+            <span class="title">{{song.Title}}</span>
+            <div class="filename">{{song.file}}</div>
+        </div>
+
+        <div class="control">
+            <span class="next"><button class="btn btn-primary" ng-click="skip()">skip</button></span>
+        </div>
+
+        <div class="playlist">
+            <ol>
+                <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
+                    <span class="artist">{{file.Artist}}</span>
+                    <span class="title">{{file.Title}}</span>
+                    <div class="filename">{{file.file}}</div>
+                    <div class="control">
+                        <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
+                        <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
+                        <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
+                        <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
+                    </div>
+
+                </li>
+            </ol>
+        </div>
+
+    </div>
+
+</body>
+</html>
