@@ -2,21 +2,36 @@ var radio = angular.module('radio', ['ngAnimate','ui.bootstrap']);
 
 radio.factory('mpd', function($http) {
     return {
-    sendCommand: function(cmd, args) {
-        args = args || [];
-        var params = { c: cmd };
-        for (var i = 0; i < args.length; i++) {
-            var key = 'a' + i;
-            params[key] = args[i];
+        sendCommand: function(cmd, args) {
+            args = args || [];
+            var params = { c: cmd };
+            for (var i = 0; i < args.length; i++) {
+                var key = 'a' + i;
+                params[key] = args[i];
+            }
+            return $http.get('m.php', { params: params }).then(function(response) {
+                return response.data;
+            });
         }
-        return $http.get('m.php', { params: params }).then(function(response) {
-            return response.data;
-        });
     }
-}
 });
 
-radio.controller('dj', function ($scope, $http, mpd) {
+radio.controller('modal', function ($scope, $uibModalInstance, items) {
+    $scope.items = items;
+    $scope.selected = {
+        item: $scope.items[0]
+    };
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+radio.controller('dj', function ($scope, $http, $uibModal, $q, mpd) {
 
     var songId = 0;
     var statusFile = '/radio/mpd-status.json';
@@ -40,6 +55,25 @@ radio.controller('dj', function ($scope, $http, mpd) {
             $scope.percent = $scope.getPercent();
         });
         i++;
+    };
+
+    $scope.find = function (type, what) {
+        var modalInstance = $uibModal.open({
+            animation: false,
+            templateUrl: 'modal.html',
+            controller: 'modal',
+            resolve: {
+                items: function () {
+                    return mpd.sendCommand('find', [type, what]).then(function(data) {
+                        return data;
+                    });
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        });
     };
 
     $scope.getPercent = function() {
