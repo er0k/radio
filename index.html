@@ -14,20 +14,39 @@
 <body ng-controller="dj">
 
     <div class="container">
+
+        <div class="player">
+            <audio src="http://deb.r0k:8001/stream.ogg" controls="true" preload="none"></audio>
+            <span class="listeners">{{status.listeners}} listeners</span>
+        </div>
+
         <div class="song">
             <uib-progressbar max="100" value="percent">
                 <span>{{status.elapsed}} / {{song.Time}}</span>
             </uib-progressbar>
             <div ng-show="selected">{{selected}}</div>
-            <span class="arist"><a ng-click="find('Artist', song.Artist)" href="#">{{song.Artist}}</a></span>
-            <span class="arist"><a ng-click="find('Album', song.Album)" href="#">{{song.Album}}</a></span>
-            <span class="title"><a ng-click="find('Title', song.Title)" href="#">{{song.Title}}</a></span>
-            <div class="filename">{{song.file}}</div>
+            <dl class="current">
+                <dt class="artist">artist</dt>
+                <dd class="artist"><a ng-click="find('Artist', song.Artist)" href="#">{{song.Artist}}</a></dd>
+                <dt class="album">album</dt>
+                <dd class="album"><a ng-click="find('Album', song.Album)" href="#">{{song.Album}}</a></dd>
+                <dt class="title">title</dt>
+                <dd class="title"><a ng-click="find('Title', song.Title)" href="#">{{song.Title}}</a></dd>
+                <dt class="filename">filename</dt>
+                <dd class="filename">{{song.file}}</a></dd>
+            </dl>
         </div>
 
         <div class="control">
+            <span class="refresh"><button class="btn btn-primary" ng-click="refresh()">&#x21ba;</button></span>
             <span class="next"><button class="btn btn-primary" ng-click="skip()">skip</button></span>
+            <span class="shuffle"><button class="btn btn-primary" ng-click="shuffle()">shuffle</button></span>
+            <span class="crop"><button class="btn btn-primary" ng-click="crop()">crop</button></span>
+            <span class="addRandom"><button class="btn btn-primary" ng-click="addRandom()">add random</button></span>
+
         </div>
+
+        <hr />
 
         <div class="playlist">
             <ol>

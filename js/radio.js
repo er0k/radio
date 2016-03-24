@@ -31,7 +31,7 @@ radio.controller('modal', function ($scope, $uibModalInstance, items) {
     };
 });
 
-radio.controller('dj', function ($scope, $http, $uibModal, $q, mpd) {
+radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
 
     var songId = 0;
     var statusFile = '/radio/mpd-status.json';
@@ -60,6 +60,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $q, mpd) {
     $scope.find = function (type, what) {
         var modalInstance = $uibModal.open({
             animation: false,
+            size: 'lg',
             templateUrl: 'modal.html',
             controller: 'modal',
             resolve: {
@@ -73,6 +74,8 @@ radio.controller('dj', function ($scope, $http, $uibModal, $q, mpd) {
 
         modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
+        }, function () {
+            console.log('modal dismissed');
         });
     };
 
@@ -96,17 +99,67 @@ radio.controller('dj', function ($scope, $http, $uibModal, $q, mpd) {
         });
     };
 
-    $scope.getPlaylist = function() {
+    $scope.getPlaylist = function(timeout) {
+        timeout = timeout || 500;
+        console.log(timeout);
         setTimeout(function() {
             mpd.sendCommand('playlistinfo').then(function(data) {
                 $scope.playlist = data;
             });
-        }, 500);
+        }, timeout);
     }
 
     $scope.skip = function() {
         mpd.sendCommand('next');
         $scope.getStatus();
+    };
+
+    $scope.shuffle = function() {
+        mpd.sendCommand('shuffle');
+        $scope.getPlaylist();
+    };
+
+    // @todo : this sucks and should be done on the backend
+    $scope.crop = function() {
+        if ($scope.status != null) {
+            var pos = parseInt($scope.status.song);
+            var length = parseInt($scope.status.playlistlength);
+
+            if ((length - 1) - pos > 0) {
+                // delete all songs after current
+                var start = pos + 1;
+                var end = length;
+                if (end > start) {
+                    var del = start + ':' + end;
+                } else {
+                    var del = end;
+                }
+                // delete songs before current
+                if (pos == 1) {
+                    var del2 = 0;
+                } else if (pos > 1) {
+                    var del2 = '0:' + pos;
+                }
+            }
+
+            mpd.sendCommand('delete', [del]).then(function(data) {
+                mpd.sendCommand('delete', [del2]).then(function(data) {
+                });
+            });
+
+        }
+
+        $scope.getPlaylist();
+    };
+
+    $scope.addRandom = function() {
+        mpd.sendCommand('addRandomSong');
+        $scope.getPlaylist(1020);
+    };
+
+    $scope.refresh = function() {
+        $scope.getStatus();
+        $scope.getPlaylist();
     };
 
     $scope.moveUp = function(pos) {
