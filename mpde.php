@@ -4,12 +4,19 @@ require_once('MPD.php');
 
 class mpde extends MPD 
 {
-    public function addRandomSong()
+
+    const MUSIC_DIR = '/Music/';
+
+    private $db;
+
+    public function addRandomSong($num = 1)
     {
-        try {
-            $this->add($this->getRandomSong());
-        } catch (MPDException $e) {
-            return false;
+        for (; $num > 0; $num--) {
+            try {
+                $this->add($this->getRandomSong());
+            } catch (MPDException $e) {
+                return false;
+            }
         }
 
         return true;
@@ -17,15 +24,40 @@ class mpde extends MPD
 
     private function getRandomSong()
     {
-        $db = $this->listall();
+        $db = $this->getDb();
 
-        $randKey = array_rand($db);
-        while (is_array($db[$randKey])) {
-            $randKey = array_rand($db);
+        $randomSong = $db[array_rand($db)];
+        while (!$this->isFile($randomSong)) {
+            $randomSong = $db[array_rand($db)];
         }
 
-        $randomSong = $db[$randKey];
-
         return $randomSong;
+    }
+
+    private function isFile(&$song)
+    {
+        if (is_file(self::MUSIC_DIR . $song)) {
+            return true;
+        }
+
+        if (
+            is_array($song)
+            && isset($song['file'])
+            && is_file(self::MUSIC_DIR . $song['file'])
+        ) {
+            $song = $song['file'];
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getDb()
+    {
+        if (!$this->db) {
+            $this->db = $this->listall();
+        }
+
+        return $this->db;
     }
 }
