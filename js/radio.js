@@ -31,8 +31,10 @@ radio.controller('modal', function ($scope, $uibModalInstance, items) {
     };
 });
 
-radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
+radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
 
+    var statusTimeout = 3000;
+    var progressTimeout = 500;
     var songId = 0;
     var statusFile = '/radio/mpd-status.json';
     var songFile = '/radio/mpd-song.json';
@@ -40,19 +42,21 @@ radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
     var songLength = 0;
     var songTime = 0;
     var i = 0;
+    var elapsedGuess = 0;
+    var elapsedReal = 0;
+    var elapsed = 0;
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
             $scope.status = data;
             lastSongId = songId;
             songId = $scope.status.songid;
+            elapsedReal = $scope.status.elapsed;
 
             if ($scope.status.songid != lastSongId) {
                 $scope.getCurrentSong();
                 $scope.getPlaylist();
             }
-
-            $scope.percent = $scope.getPercent();
         });
         i++;
     };
@@ -79,11 +83,23 @@ radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
         });
     };
 
-    $scope.getPercent = function() {
-        if ($scope.song != null && $scope.status != null) {
-            return ($scope.status.elapsed / $scope.song.Time) * 100;
+    $scope.getProgress = function() {
+        var total = 0;
+        var percent = 0;
+        if (elapsedReal > 0) {
+            elapsedGuess = elapsedReal;
+            elapsedReal = 0;
+        } else {
+            elapsedGuess = parseFloat(elapsed) + (progressTimeout / 1000);
         }
-        return 0;
+        elapsed = elapsedGuess;
+        if ($scope.song != null) {
+            total = parseInt($scope.song.Time);
+            percent = (elapsed / total) * 100;
+        }
+        $scope.elapsed = elapsed;
+        $scope.total = total;
+        $scope.percent = Math.round(percent);
     };
 
     $scope.isCurrentSong = function(file) {
@@ -101,7 +117,6 @@ radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
 
     $scope.getPlaylist = function(timeout) {
         timeout = timeout || 500;
-        console.log(timeout);
         setTimeout(function() {
             mpd.sendCommand('playlistinfo').then(function(data) {
                 $scope.playlist = data;
@@ -183,6 +198,8 @@ radio.controller('dj', function ($scope, $http, $uibModal, mpd) {
     };
 
     $scope.getStatus();
-    setInterval($scope.getStatus, 3000);
+    $scope.getProgress();
+    $interval($scope.getStatus, statusTimeout);
+    $interval($scope.getProgress, progressTimeout);
 
 });
