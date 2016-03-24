@@ -5,8 +5,8 @@ unset($_REQUEST['c']);
 ksort($_REQUEST);
 $args = array_values($_REQUEST);
 
-require_once('MPD.php');
-$mpd = new MPD();
+require_once('mpde.php');
+$mpd = new mpde();
 
 try {
     $result = call_user_func_array(array($mpd, $cmd), $args);
