@@ -34,7 +34,7 @@ radio.controller('modal', function ($scope, $uibModalInstance, items) {
 radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
 
     var statusTimeout = 3000;
-    var progressTimeout = 500;
+    var progressTimeout = 1000;
     var songId = 0;
     var statusFile = '/radio/mpd-status.json';
     var songFile = '/radio/mpd-song.json';
@@ -99,6 +99,10 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
             total = parseInt($scope.song.Time);
             percent = (elapsed / total) * 100;
         }
+
+        $scope.hmElapsed = convertTime(elapsed);
+        $scope.hmTotal = convertTime(total);
+
         $scope.elapsed = elapsed;
         $scope.total = total;
         $scope.percent = Math.round(percent);
@@ -171,6 +175,16 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         mpd.sendCommand('delete', [pos]);
         $scope.getPlaylist();
     };
+
+    function convertTime(seconds) {
+        var date = new Date(null);
+        date.setSeconds(seconds);
+        if (seconds > 3600) {
+            return date.toISOString().substr(11, 8);
+        } else {
+            return date.toISOString().substr(14, 5);
+        }
+    }
 
     $scope.getStatus();
     $scope.getProgress();
