@@ -4,12 +4,12 @@ radio.factory('mpd', function($http) {
     return {
         sendCommand: function(cmd, args) {
             args = args || [];
-            var params = { c: cmd };
+            var params = { cmd: cmd };
             for (var i = 0; i < args.length; i++) {
                 var key = 'a' + i;
                 params[key] = args[i];
             }
-            return $http.get('m.php', { params: params }).then(function(response) {
+            return $http.post('m.php', params).then(function(response) {
                 return response.data;
             });
         }

@@ -1,9 +1,11 @@
 <?php
 
-$cmd = isset($_REQUEST['c']) ? $_REQUEST['c'] : exit();
-unset($_REQUEST['c']);
-ksort($_REQUEST);
-$args = array_values($_REQUEST);
+$m = json_decode(file_get_contents('php://input'), true);
+
+$cmd = isset($m['cmd']) ? $m['cmd'] : exit();
+unset($m['cmd']);
+ksort($m);
+$args = array_values($m);
 
 require_once('mpde.php');
 $mpd = new mpde();
@@ -16,3 +18,4 @@ try {
 
 header('Content-Type: application/json');
 echo json_encode($result);
+
