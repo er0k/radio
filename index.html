@@ -47,24 +47,41 @@
 
         </div>
 
-        <hr />
+        <br />
 
-        <div class="playlist">
-            <ol>
-                <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
-                    <span class="artist">{{file.Artist}}</span>
-                    <span class="title">{{file.Title}}</span>
-                    <div class="filename">{{file.file}}</div>
-                    <div class="control">
-                        <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
-                        <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
-                        <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
-                        <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
-                    </div>
+        <uib-tabset active="0" justified="true" class="tabs">
 
-                </li>
-            </ol>
-        </div>
+            <uib-tab index="0" heading="playlist" class="tab">
+                <ol class="playlist">
+                    <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
+                        <span class="artist">{{file.Artist}} - </span>
+                        <span class="title">{{file.Title}}</span>
+                        <div class="filename">{{file.file}}</div>
+                        <div class="control">
+                            <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
+                            <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
+                            <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
+                            <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
+                        </div>
+
+                    </li>
+                </ol>
+            </uib-tab>
+
+            <uib-tab index="1" heading="chat" class="tab">
+            </uib-tab>
+
+            <uib-tab index="2" heading="browse" class="tab">
+                <div class="browse">brows some files yo</div>
+            </uib-tab>
+
+            <uib-tab index="3" heading="search" class="tab">
+                <div class="search">search shit</div>
+            </uib-tab>
+            
+        </uib-9et>
+
+        
 
     </div>
 
