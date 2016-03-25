@@ -12,11 +12,7 @@ class mpde extends MPD
     public function addRandomSong($num = 1)
     {
         for (; $num > 0; $num--) {
-            try {
-                $this->add($this->getRandomSong());
-            } catch (MPDException $e) {
-                return false;
-            }
+            $this->add($this->getRandomSong());
         }
 
         return true;
