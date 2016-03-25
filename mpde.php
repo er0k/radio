@@ -22,6 +22,31 @@ class mpde extends MPD
         return true;
     }
 
+    public function crop()
+    {
+        $status = $this->status();
+
+        $pos = $status['song'];
+        $length = $status['playlistlength'];
+
+        if ($length > 0) {
+            for ($length--; $length >= 0; $length--) {
+                if ($length != $this->getPosition()) {
+                    $this->delete($length);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function getPosition()
+    {
+        $status = $this->status();
+
+        return $status['song'];
+    }
+
     private function getRandomSong()
     {
         $db = $this->getDb();

@@ -134,36 +134,8 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         $scope.getPlaylist();
     };
 
-    // @todo : this sucks and should be done on the backend
     $scope.crop = function() {
-        if ($scope.status != null) {
-            var pos = parseInt($scope.status.song);
-            var length = parseInt($scope.status.playlistlength);
-
-            if ((length - 1) - pos > 0) {
-                // delete all songs after current
-                var start = pos + 1;
-                var end = length;
-                if (end > start) {
-                    var del = start + ':' + end;
-                } else {
-                    var del = end;
-                }
-                // delete songs before current
-                if (pos == 1) {
-                    var del2 = 0;
-                } else if (pos > 1) {
-                    var del2 = '0:' + pos;
-                }
-            }
-
-            mpd.sendCommand('delete', [del]).then(function(data) {
-                mpd.sendCommand('delete', [del2]).then(function(data) {
-                });
-            });
-
-        }
-
+        mpd.sendCommand('crop');
         $scope.getPlaylist();
     };
 
