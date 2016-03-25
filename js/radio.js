@@ -46,6 +46,8 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
     var elapsedReal = 0;
     var elapsed = 0;
 
+    $scope.count = 1;
+
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
             $scope.status = data;
@@ -139,12 +141,13 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         $scope.getPlaylist();
     };
 
-    $scope.addRandom = function() {
-        mpd.sendCommand('addRandomSong');
+    $scope.addRandom = function(num) {
+        mpd.sendCommand('addRandomSong', [num]);
         $scope.getPlaylist(1020);
     };
 
     $scope.refresh = function() {
+        $scope.count = 1;
         $scope.getStatus();
         $scope.getPlaylist();
     };
