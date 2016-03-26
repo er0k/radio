@@ -70,8 +70,11 @@
 
             <uib-tab index="1" heading="browse" class="tab" ng-click="browse(path)">
                 <div class="browse">
-                    <div class="path">{{pathParts.path}}</div>
-                    {{pathParts.parts}}
+                    <div class="path">
+                        <span ng-repeat="part in pathParts">
+                            / <a href="#" ng-click="browse(part.link)">{{part.name}}</a>
+                        </span>
+                    </div>
                     <div class="control">
                         <button class="add btn btn-sm btn-default" ng-click="add(path)">add all</button>
                     </div>
@@ -80,10 +83,10 @@
                             <a href="#"ng-click="browse(directory)">{{directory}}</a>
                         </li>
                         <li ng-repeat="file in files">
-                            <span class="file">{{file}}</span>
-                            <span class="control">
+                            <div class="file">{{file}}</div>
+                            <div class="control">
                                 <button class="add btn btn-sm btn-default" ng-click="add(file)">+</button>
-                            </span>
+                            </div>
                         </li>
                     </ul>
                 </div>

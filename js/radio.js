@@ -203,8 +203,21 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
     };
 
     function getPathParts(path) {
-        var part = path.split('/');
-        var parts = {path: path, parts: part};
+        var parts = [{name: 'Music', link: ''}];
+        if (path != '') {
+            var tmpParts = path.split('/');
+            var link = '';
+            tmpParts.forEach(function(part, i) {
+                var newPart = {};
+                newPart['name'] = part;
+                if (i != 0) {
+                    link += '/';
+                }
+                link += part;
+                newPart['link'] = link;
+                parts.push(newPart);
+            });
+        }
         console.log(parts);
         return parts;
     }

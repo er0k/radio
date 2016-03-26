@@ -39,17 +39,31 @@
     margin-top: -33px;
 }
 
-.items li {
-    height: 35px;
-}
-
-.items .control {
-    float: right;
-}
-
 .playlist .filename {
     max-width: 75%;
 }
+
+.browse .path {
+    height: 35px;
+    padding: 5px 0 10px 5px;
+}
+
+.browse .control {
+    float: right;
+    margin-top: -33px;
+    padding-right: 3px;
+}
+
+.browse .items li {
+    padding-top: 5px;
+    height: 35px;
+}
+
+.browse .items .control {
+    margin-top: -22px;
+}
+
+
 
 .filename {
     font-size: 75%;
