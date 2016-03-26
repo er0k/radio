@@ -68,17 +68,34 @@
                 </ol>
             </uib-tab>
 
-            <uib-tab index="1" heading="chat" class="tab">
+            <uib-tab index="1" heading="browse" class="tab" ng-click="browse(path)">
+                <div class="browse">
+                    <div class="path">{{pathParts.path}}</div>
+                    {{pathParts.parts}}
+                    <div class="control">
+                        <button class="add btn btn-sm btn-default" ng-click="add(path)">add all</button>
+                    </div>
+                    <ul class="items">
+                        <li ng-repeat="directory in directories">
+                            <a href="#"ng-click="browse(directory)">{{directory}}</a>
+                        </li>
+                        <li ng-repeat="file in files">
+                            <span class="file">{{file}}</span>
+                            <span class="control">
+                                <button class="add btn btn-sm btn-default" ng-click="add(file)">+</button>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
             </uib-tab>
 
-            <uib-tab index="2" heading="browse" class="tab">
-                <div class="browse">brows some files yo</div>
-            </uib-tab>
-
-            <uib-tab index="3" heading="search" class="tab">
+            <uib-tab index="2" heading="search" class="tab">
                 <div class="search">search shit</div>
             </uib-tab>
-            
+
+            <uib-tab index="3" heading="chat" class="tab">
+            </uib-tab>
+
         </uib-9et>
 
         

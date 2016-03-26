@@ -47,6 +47,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
     var elapsed = 0;
 
     $scope.count = 1;
+    $scope.path = '';
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -61,6 +62,24 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
             }
         });
         i++;
+    };
+
+    $scope.browse = function (path) {
+        path = path || '';
+        $scope.path = path;
+        $scope.pathParts = getPathParts(path);
+        mpd.sendCommand('lsinfo', [path]).then(function(data) {
+            $scope.directories = [];
+            $scope.files = [];
+            data.forEach(function(item) {
+                if (item.directory != null) {
+                    $scope.directories.push(item.directory);
+                }
+                if (item.file != null) {
+                    $scope.files.push(item.file);
+                }
+            });
+        });
     };
 
     $scope.find = function (type, what) {
@@ -150,10 +169,17 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         $scope.getPlaylist(1020);
     };
 
+    $scope.add = function(item) {
+        mpd.sendCommand('add', [item]);
+        $scope.getPlaylist();
+    };
+
     $scope.refresh = function() {
         $scope.count = 1;
         $scope.getStatus();
+        $scope.getCurrentSong();
         $scope.getPlaylist();
+        $scope.browse();
     };
 
     $scope.moveUp = function(pos) {
@@ -175,6 +201,13 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         mpd.sendCommand('delete', [pos]);
         $scope.getPlaylist();
     };
+
+    function getPathParts(path) {
+        var part = path.split('/');
+        var parts = {path: path, parts: part};
+        console.log(parts);
+        return parts;
+    }
 
     function convertTime(seconds) {
         var date = new Date(null);
