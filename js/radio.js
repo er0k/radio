@@ -123,6 +123,9 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         elapsed = elapsedGuess;
         if ($scope.song != null) {
             total = parseInt($scope.song.Time);
+            if (isNaN(total)) {
+                total = elapsed;
+            }
             percent = (elapsed / total) * 100;
         }
 
@@ -235,6 +238,9 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
     }
 
     function convertTime(seconds) {
+        if (isNaN(seconds)) {
+            return '00:00';
+        }
         var date = new Date(null);
         date.setSeconds(seconds);
         if (seconds > 3600) {
