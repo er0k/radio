@@ -68,7 +68,17 @@
                 </ol>
             </uib-tab>
 
-            <uib-tab index="1" heading="browse" class="tab" ng-click="browse(path)">
+            <uib-tab index="1" heading="saved" class="tab" ng-click="browseSaved()">
+                <div class="browse saved">
+                    <ul class="items">
+                        <li ng-repeat="list in lists">
+                            <a href="#"ng-click="load(list)">{{list}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </uib-tab>
+
+            <uib-tab index="2" heading="browse" class="tab" ng-click="browse(path)">
                 <div class="browse">
                     <div class="path">
                         <span ng-repeat="part in pathParts">
@@ -92,11 +102,11 @@
                 </div>
             </uib-tab>
 
-            <uib-tab index="2" heading="search" class="tab">
+            <uib-tab index="3" heading="search" class="tab">
                 <div class="search">search shit</div>
             </uib-tab>
 
-            <uib-tab index="3" heading="chat" class="tab">
+            <uib-tab index="4" heading="chat" class="tab">
             </uib-tab>
 
         </uib-9et>

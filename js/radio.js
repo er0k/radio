@@ -82,6 +82,13 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         });
     };
 
+    $scope.browseSaved = function ()  {
+        mpd.sendCommand('listplaylists').then(function(data) {
+            console.log(data);
+            $scope.lists = Object.keys(data);
+        });
+    };
+
     $scope.find = function (type, what) {
         var modalInstance = $uibModal.open({
             animation: false,
@@ -172,6 +179,11 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
     $scope.add = function(item) {
         mpd.sendCommand('add', [item]);
         $scope.getPlaylist();
+    };
+
+    $scope.load = function(list) {
+        mpd.sendCommand('load', [list]);
+        $scope.getPlaylist(1000);
     };
 
     $scope.refresh = function() {
