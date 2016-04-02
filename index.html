@@ -3,13 +3,15 @@
 <head>
     <meta charset="utf-8">
     <title>radio</title>
+
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/radio.css">
+    <link rel="stylesheet" href="radio.css">
+
     <script src="js/angular.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/animate.js"></script>
-    <script src="js/radio.js"></script>
+    <script src="radio.js"></script>
 </head>
 <body ng-controller="dj">
 
@@ -107,12 +109,12 @@
             </uib-tab>
 
             <uib-tab index="4" heading="chat" class="tab">
+                <div class="chat">
+                    <iframe class="chatframe" src="chat.html" scrolling="no" frameborder="0"></iframe>
+                </div>
             </uib-tab>
 
-        </uib-9et>
-
-        
-
+        </uib-tabset>
     </div>
 
     <script type="text/ng-template" id="modal.html">

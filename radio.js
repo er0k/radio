@@ -84,7 +84,6 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
 
     $scope.browseSaved = function ()  {
         mpd.sendCommand('listplaylists').then(function(data) {
-            console.log(data);
             $scope.lists = Object.keys(data);
         });
     };
@@ -233,7 +232,6 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
                 parts.push(newPart);
             });
         }
-        console.log(parts);
         return parts;
     }
 
