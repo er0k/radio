@@ -23,7 +23,7 @@
         </div>
 
         <div class="song">
-            <uib-progressbar max="total" value="elapsed">
+            <uib-progressbar id="progressbar" max="total" value="elapsed" ng-click="progress($event)">
                 <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
             </uib-progressbar>
             <div ng-show="selected">{{selected}}</div>

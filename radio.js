@@ -110,6 +110,18 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         });
     };
 
+    $scope.progress = function(event) {
+        var totalWidth = angular.element(document.getElementById('progressbar')).prop('offsetWidth');
+        var x = event.offsetX;
+        var percentage = (x / totalWidth);
+        var time = Math.round(percentage * $scope.song.Time);
+
+        $scope.elapsed = time;
+        elapsedReal = time;
+
+        mpd.sendCommand('seekcur', [time]);
+    };
+
     $scope.getProgress = function() {
         var total = 0;
         var percent = 0;
