@@ -48,6 +48,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
 
     $scope.count = 1;
     $scope.path = '';
+    $scope.activeTab = 0;
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -108,6 +109,26 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         }, function () {
             console.log('modal dismissed');
         });
+    };
+
+    $scope.search = function(type, what) {
+        $scope.activeTab = 3;
+        console.log(type);
+        console.log(what);
+        $scope.results = {};
+        $scope.what = what;
+        mpd.sendCommand('search', [type, what]).then(function(data) {
+            console.log(data);
+            $scope.results = data;
+        });
+    };
+
+    $scope.searchSubmit = function(form) {
+        console.log(form);
+        var what = form.what.$modelValue;
+        var type = form.type.$modelValue;
+        console.log(type + ', ' + what);
+        $scope.search(type, what);
     };
 
     $scope.progress = function(event) {
@@ -206,6 +227,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         $scope.getCurrentSong();
         $scope.getPlaylist();
         $scope.browse();
+        $scope.results = {};
     };
 
     $scope.moveUp = function(pos) {

@@ -29,11 +29,11 @@
             <div ng-show="selected">{{selected}}</div>
             <dl class="current">
                 <dt class="artist">artist</dt>
-                <dd class="artist"><a ng-click="find('Artist', song.Artist)" href="#">{{song.Artist}}</a></dd>
+                <dd class="artist"><a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a></dd>
                 <dt class="album">album</dt>
-                <dd class="album"><a ng-click="find('Album', song.Album)" href="#">{{song.Album}}</a></dd>
+                <dd class="album"><a ng-click="search('Album', song.Album)" href="#">{{song.Album}}</a></dd>
                 <dt class="title">title</dt>
-                <dd class="title"><a ng-click="find('Title', song.Title)" href="#">{{song.Title}}</a></dd>
+                <dd class="title"><a ng-click="search('Title', song.Title)" href="#">{{song.Title}}</a></dd>
                 <dt class="filename">filename</dt>
                 <dd class="filename">{{song.file}}</a></dd>
             </dl>
@@ -51,7 +51,7 @@
 
         <br />
 
-        <uib-tabset active="0" justified="true" class="tabs">
+        <uib-tabset active="activeTab" justified="true" class="tabs">
 
             <uib-tab index="0" heading="playlist" class="tab">
                 <ol class="playlist">
@@ -105,7 +105,28 @@
             </uib-tab>
 
             <uib-tab index="3" heading="search" class="tab">
-                <div class="search">search shit</div>
+                <div class="search">
+                    <form name="search">
+                        <select name="type" data-ng-model="type">
+                            <option value="Artist">artist</option>
+                            <option value="Title">title</option>
+                            <option value="Album">album</option>
+                            <option value="Filename">filename</option>
+                        </select>
+                        <input type="text" name="what" data-ng-model="what" value="{{what}}">
+                        <input type="submit" class="btn btn-sm btn-primary" ng-click="searchSubmit(search)">
+                    </form>
+                    <div class="results">
+                        <ul class="items">
+                            <li ng-repeat="result in results track by $index">
+                                <div class="file">{{result.file}}</div>
+                                <div class="control">
+                                    <button class="add btn btn-sm btn-default" ng-click="add(result.file)">+</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </uib-tab>
 
             <uib-tab index="4" heading="chat" class="tab">

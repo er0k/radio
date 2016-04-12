@@ -48,18 +48,21 @@
     padding: 5px 0 10px 5px;
 }
 
-.browse .control {
+.browse .control,
+.search .control {
     float: right;
     margin-top: -33px;
     padding-right: 3px;
 }
 
-.browse .items li {
+.browse .items li,
+.search .items li {
     padding-top: 5px;
     height: 35px;
 }
 
-.browse .items .control {
+.browse .items .control,
+.search .items .control {
     margin-top: -22px;
 }
 
