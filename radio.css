@@ -76,6 +76,7 @@
     background-color: #999 !important;
 }
 
+.currentSong .name, 
 .currentSong .artist, 
 .currentSong .title, 
 .currentSong .filename {

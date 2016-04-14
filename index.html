@@ -27,7 +27,10 @@
                 <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
             </uib-progressbar>
             <div ng-show="selected">{{selected}}</div>
+
             <dl class="current">
+                <dt class="name">name</dt>
+                <dd class="name">{{song.Name}}</a></dd>
                 <dt class="artist">artist</dt>
                 <dd class="artist"><a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a></dd>
                 <dt class="album">album</dt>
@@ -56,6 +59,7 @@
             <uib-tab index="0" heading="playlist" class="tab">
                 <ol class="playlist">
                     <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
+                        <span class="name">{{file.Name}}</span>
                         <span class="artist">{{file.Artist}} - </span>
                         <span class="title">{{file.Title}}</span>
                         <div class="filename">{{file.file}}</div>
