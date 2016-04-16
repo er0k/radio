@@ -28,18 +28,13 @@
             </uib-progressbar>
             <div ng-show="selected">{{selected}}</div>
 
-            <dl class="current">
-                <dt class="name">name</dt>
-                <dd class="name">{{song.Name}}</a></dd>
-                <dt class="artist">artist</dt>
-                <dd class="artist"><a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a></dd>
-                <dt class="album">album</dt>
-                <dd class="album"><a ng-click="search('Album', song.Album)" href="#">{{song.Album}}</a></dd>
-                <dt class="title">title</dt>
-                <dd class="title"><a ng-click="search('Title', song.Title)" href="#">{{song.Title}}</a></dd>
-                <dt class="filename">filename</dt>
-                <dd class="filename">{{song.file}}</a></dd>
-            </dl>
+            <div class="current">
+                {{song.Name}}
+                <a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a> -
+                <a ng-click="search('Title', song.Title)" href="#">{{song.Title}}</a>
+                [<a ng-click="search('Album', song.Album)" href="#">{{song.Album}}</a>]
+                <div class="filename">{{song.file}}</div>
+            </div>
         </div>
 
         <div class="control">
