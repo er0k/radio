@@ -54,6 +54,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.browse = function (path) {
+        $scope.activeTab = 2;
         path = path || '';
         $scope.path = path;
         $scope.pathParts = getPathParts(path);
@@ -85,7 +86,13 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.results = {};
         $scope.what = what;
         mpd.sendCommand('search', [type, what]).then(function(data) {
-            $scope.results = data;
+            var searchResults = [];
+            data.forEach(function(item) {
+                var searchPathParts = getPathParts(item.file);
+                var results = { path: item.file, parts: searchPathParts };
+                searchResults.push(results);
+            });
+            $scope.results = searchResults;
         });
     };
 
@@ -196,8 +203,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.getCurrentSong();
         $scope.getPlaylist();
         $scope.getProgress();
-        $scope.browse();
         $scope.results = {};
+        $scope.path = '';
+        $scope.pathParts = getPathParts('');
+        $scope.directories = [];
+        $scope.files = [];
     };
 
     $scope.moveUp = function(pos) {

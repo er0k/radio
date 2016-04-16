@@ -73,9 +73,12 @@
     height: 35px;
 }
 
-.browse .items .control,
-.search .items .control {
+.browse .items .control {
     margin-top: -22px;
+}
+
+.search .items .control {
+    margin-top: -3px;
 }
 
 

@@ -112,9 +112,11 @@
                     <div class="results">
                         <ul class="items">
                             <li ng-repeat="result in results track by $index">
-                                <div class="file">{{result.file}}</div>
+                                <span class="file" ng-repeat="part in result.parts">
+                                    / <a href="#" ng-click="browse(part.link)">{{part.name}}</a>
+                                </span>
                                 <div class="control">
-                                    <button class="add btn btn-sm btn-default" ng-click="add(result.file)">+</button>
+                                    <button class="add btn btn-sm btn-default" ng-click="add(result.path)">+</button>
                                 </div>
                             </li>
                         </ul>
