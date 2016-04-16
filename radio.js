@@ -16,22 +16,8 @@ radio.factory('mpd', function($http) {
     }
 });
 
-radio.controller('modal', function ($scope, $uibModalInstance, items) {
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
 
-    $scope.ok = function () {
-        $uibModalInstance.close($scope.selected.item);
-    };
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-});
-
-radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
+radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     var statusTimeout = 3000;
     var progressTimeout = 1000;
@@ -89,45 +75,19 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         });
     };
 
-    $scope.find = function (type, what) {
-        var modalInstance = $uibModal.open({
-            animation: false,
-            size: 'lg',
-            templateUrl: 'modal.html',
-            controller: 'modal',
-            resolve: {
-                items: function () {
-                    return mpd.sendCommand('find', [type, what]).then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            console.log('modal dismissed');
-        });
-    };
 
     $scope.search = function(type, what) {
         $scope.activeTab = 3;
-        console.log(type);
-        console.log(what);
         $scope.results = {};
         $scope.what = what;
         mpd.sendCommand('search', [type, what]).then(function(data) {
-            console.log(data);
             $scope.results = data;
         });
     };
 
     $scope.searchSubmit = function(form) {
-        console.log(form);
         var what = form.what.$modelValue;
         var type = form.type.$modelValue;
-        console.log(type + ', ' + what);
         $scope.search(type, what);
     };
 
@@ -226,6 +186,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
         $scope.getStatus();
         $scope.getCurrentSong();
         $scope.getPlaylist();
+        $scope.getProgress();
         $scope.browse();
         $scope.results = {};
     };
@@ -266,6 +227,7 @@ radio.controller('dj', function ($scope, $http, $uibModal, $interval, mpd) {
                 parts.push(newPart);
             });
         }
+
         return parts;
     }
 

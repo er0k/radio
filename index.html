@@ -26,7 +26,6 @@
             <uib-progressbar id="progressbar" max="total" value="elapsed" ng-click="progress($event)">
                 <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
             </uib-progressbar>
-            <div ng-show="selected">{{selected}}</div>
 
             <div class="current">
                 {{song.Name}}
@@ -136,24 +135,6 @@
 
         </uib-tabset>
     </div>
-
-    <script type="text/ng-template" id="modal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">I'm a modal!</h3>
-        </div>
-        <div class="modal-body">
-            <ul>
-                <li ng-repeat="item in items">
-                    <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item.file }}</a>
-                </li>
-            </ul>
-            Selected: <b>{{ selected.item }}</b>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" type="button" ng-click="ok()">add</button>
-            <button class="btn btn-warning" type="button" ng-click="cancel()">nah</button>
-        </div>
-    </script>
 
 </body>
 </html>
