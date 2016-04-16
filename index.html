@@ -85,12 +85,12 @@
                     </div>
                     <ul class="items">
                         <li ng-repeat="directory in directories">
-                            <a href="#"ng-click="browse(directory)">{{directory}}</a>
+                            <a href="#"ng-click="browse(directory.path)">{{directory.name}}</a>
                         </li>
                         <li ng-repeat="file in files">
-                            <div class="file">{{file}}</div>
+                            <div class="file">{{file.name}}</div>
                             <div class="control">
-                                <button class="add btn btn-sm btn-default" ng-click="add(file)">+</button>
+                                <button class="add btn btn-sm btn-default" ng-click="add(file.path)">+</button>
                             </div>
                         </li>
                     </ul>
