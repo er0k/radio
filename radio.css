@@ -1,7 +1,19 @@
+.container {
+    margin-top: 10px;
+}
 
+#progressbar {
+    margin-bottom: 5px;
+}
 
 .playlist {
     margin-top: 10px;
+}
+
+.btn-default.active {
+    background-color: #3e8f3e !important;
+    color: white !important;
+    text-shadow: none !important;
 }
 
 .playlist li,
@@ -31,9 +43,9 @@
     font-weight: bold;
     padding: 10px 8px;
     margin-right: 5px;
-    
 }
 
+.current .control,
 .playlist .control {
     float: right;
     margin-top: -33px;

@@ -17,33 +17,27 @@
 
     <div class="container">
 
-        <div class="player">
-            <audio src="/stream" controls="true" preload="none"></audio>
-            <span class="listeners">{{status.listeners}} listeners</span>
-        </div>
-
-        <div class="song">
+        <div class="current">
             <uib-progressbar id="progressbar" max="total" value="elapsed" ng-click="progress($event)">
                 <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
             </uib-progressbar>
 
-            <div class="current">
+            <span class="info">
                 {{song.Name}}
                 <a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a> -
                 <a ng-click="search('Title', song.Title)" href="#">{{song.Title}}</a>
                 [<a ng-click="search('Album', song.Album)" href="#">{{song.Album}}</a>]
+                <span class="listeners">({{status.listeners}} listeners)</span>
                 <div class="filename">{{song.file}}</div>
-            </div>
-        </div>
-
-        <div class="control">
-            <span class="refresh"><button class="btn btn-primary" ng-click="refresh()">&#x21ba;</button></span>
-            <span class="next"><button class="btn btn-primary" ng-click="skip()">skip</button></span>
-            <span class="shuffle"><button class="btn btn-primary" ng-click="shuffle()">shuffle</button></span>
-            <span class="crop"><button class="btn btn-primary" ng-click="crop()">crop</button></span>
-            <span class="addRandom"><button class="btn btn-primary" ng-click="addRandom(count)">add random ({{count}})</button></span>
-            <span class="incrementRandom"><button class="btn btn-primary" ng-click="count=count+1">+</button></span>
-
+            </span>
+            <span class="control">
+                <button class="btn btn-default btn-sm" ng-click="refresh()">&#x21ba;</button>
+                <button class="btn btn-default btn-sm" ng-click="skip()">skip</button>
+                <button class="btn btn-default btn-sm" ng-click="shuffle()">shuffle</button>
+                <button class="btn btn-default btn-sm" ng-click="crop()">crop</button>
+                <button class="btn btn-default btn-sm" ng-click="addRandom(count)">add random ({{count}})</button>
+                <button class="btn btn-default btn-sm" ng-click="count=count+1">+</button>
+            </span>
         </div>
 
         <br />
@@ -112,7 +106,7 @@
                             <option value="Filename">filename</option>
                         </select>
                         <input type="text" name="what" data-ng-model="what" value="{{what}}">
-                        <input type="submit" class="btn btn-sm btn-primary" ng-click="searchSubmit(search)">
+                        <input type="submit" class="btn btn-sm btn-default" ng-click="searchSubmit(search)">
                     </form>
                     <div class="results">
                         <ul class="items">
@@ -127,7 +121,18 @@
                 </div>
             </uib-tab>
 
-            <uib-tab index="4" heading="chat" class="tab">
+            <uib-tab index="4" heading="listen" class="tab">
+                <div class="listen">
+                    <div class="player">
+                        <audio src="/stream" controls="true" preload="none"></audio>
+                    </div>
+                    <div>
+                        <a href="/stream">ogg</a>
+                    </div>
+                </div>
+            </uib-tab>
+
+            <uib-tab index="5" heading="chat" class="tab">
                 <div class="chat">
                     <iframe class="chatframe" src="chat.html" scrolling="no" frameborder="0"></iframe>
                 </div>
