@@ -43,6 +43,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             songId = $scope.status.songid;
             elapsedReal = $scope.status.elapsed;
 
+            $scope.xfadeStatus = $scope.status.xfade != null ? 1 : 0;
+
             if ($scope.status.songid != lastSongId) {
                 $scope.getCurrentSong();
                 $scope.getPlaylist();
@@ -179,6 +181,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.load = function(list) {
         mpd.sendCommand('load', [list]);
         $scope.getPlaylist(1000);
+    };
+
+    $scope.xfade = function() {
+        var xfade = $scope.xfadeStatus * 10;
+        mpd.sendCommand('crossfade', [xfade]);
     };
 
     $scope.refresh = function() {
