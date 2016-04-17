@@ -13,12 +13,20 @@ radio.factory('mpd', function($http) {
             alerts = this.alerts;
             return $http.post('m.php', params).then(function(response) {
                 console.log(cmd, args, response.data);
+                // don't alert on these commands since they happen a lot
                 var nope = ['playlistinfo','listplaylists','lsinfo','search'];
                 if (!nope.includes(cmd)) {
                     if (typeof response.data.error === 'undefined') {
-                        var alert = { type: 'success', msg: cmd + ': OK' };
+                        if (response.data == true) {
+                            var type = 'success';
+                            var msg = 'OK';
+                        } else {
+                            var type = 'warning';
+                            var msg = response.data;
+                        }
+                        var alert = { type: type, msg: cmd + ': ' + msg };
                     } else {
-                        var alert = { type: 'danger', msg: response.data.error };
+                        var alert = { type: 'danger', msg: 'error! ' + response.data.error };
                     }
                     this.alerts.push(alert);
                 }
@@ -119,11 +127,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         var found = stream.match(/https:\/\/(soundcloud.com\/.*)/);
         if (found != null) {
             var scStream = 'soundcloud://url/' + found[1];
-            console.log(scStream);
             mpd.sendCommand('load', [scStream]);
         } else {
             $scope.add(stream);
         }
+        $scope.getPlaylist(1000);
     };
 
     $scope.progress = function(event) {
