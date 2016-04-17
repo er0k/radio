@@ -151,5 +151,9 @@
         </uib-tabset>
     </div>
 
+    <div class="alertContainer">
+        <uib-alert class="animate-repeat" ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="3000">{{alert.msg}}</uib-alert>
+    </div>
+
 </body>
 </html>

@@ -2,15 +2,27 @@ var radio = angular.module('radio', ['ngAnimate','ui.bootstrap']);
 
 radio.factory('mpd', function($http) {
     return {
-        sendCommand: function(cmd, args) {
+        alerts: [],
+        sendCommand: function (cmd, args) {
             args = args || [];
             var params = { cmd: cmd };
             for (var i = 0; i < args.length; i++) {
                 var key = 'a' + i;
                 params[key] = args[i];
             }
+            alerts = this.alerts;
             return $http.post('m.php', params).then(function(response) {
                 console.log(cmd, args, response.data);
+                var nope = ['playlistinfo','listplaylists','lsinfo','search'];
+                if (!nope.includes(cmd)) {
+                    if (typeof response.data.error === 'undefined') {
+                        var alert = { type: 'success', msg: cmd + ': OK' };
+                    } else {
+                        var alert = { type: 'danger', msg: response.data.error };
+                    }
+                    this.alerts.push(alert);
+                }
+
                 return response.data;
             });
         }
@@ -34,9 +46,9 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     var elapsed = 0;
 
     $scope.count = 1;
-    $scope.path = '';
-    $scope.activeTab = 4;
+    $scope.activeTab = 0;
     $scope.stream = '';
+    $scope.alerts = mpd.alerts;
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -110,9 +122,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             console.log(scStream);
             mpd.sendCommand('load', [scStream]);
         } else {
-            mpd.sendCommand('add', [stream]).then(function(response) {
-                console.log(response);
-            });
+            $scope.add(stream);
         }
     };
 
@@ -152,6 +162,14 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.elapsed = elapsed;
         $scope.total = total;
         $scope.percent = Math.round(percent);
+    };
+
+    $scope.addAlert = function(type, msg) {
+        $scope.alerts.push({ type: type, msg: msg });
+    };
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
     };
 
     $scope.isCurrentSong = function(file) {
@@ -199,7 +217,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     $scope.add = function(item) {
         mpd.sendCommand('add', [item]);
-        $scope.getPlaylist();
+        $scope.getPlaylist(1000);
     };
 
     $scope.load = function(list) {
@@ -289,6 +307,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     $scope.getStatus();
     $scope.getProgress();
+
     $interval($scope.getStatus, statusTimeout);
     $interval($scope.getProgress, progressTimeout);
 
