@@ -10,6 +10,7 @@ radio.factory('mpd', function($http) {
                 params[key] = args[i];
             }
             return $http.post('m.php', params).then(function(response) {
+                console.log(cmd, args, response.data);
                 return response.data;
             });
         }
@@ -89,25 +90,30 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.what = what;
         $scope.type = type;
         mpd.sendCommand('search', [type, what]).then(function(data) {
-            console.log(data.length);
             var searchResults = [];
-            data.forEach(function(item) {
-                var searchPathParts = getPathParts(item.file);
-                var results = { path: item.file, parts: searchPathParts };
-                searchResults.push(results);
-            });
+            if (data.length > 0) {
+                data.forEach(function(item) {
+                    var searchPathParts = getPathParts(item.file);
+                    var results = { path: item.file, parts: searchPathParts };
+                    searchResults.push(results);
+                });
+            }
+
             $scope.results = searchResults;
         });
     };
 
     $scope.addStream = function(stream) {
-        var regex = /https:\/\/(soundcloud.com\/.*)/;
-        var found = stream.match(regex);
+        var found = stream.match(/https:\/\/(soundcloud.com\/.*)/);
         if (found != null) {
-            var mpdStream = 'soundcloud://url/' + found[1];
-            mpd.sendCommand('load', [mpdStream]);
+            var scStream = 'soundcloud://url/' + found[1];
+            console.log(scStream);
+            mpd.sendCommand('load', [scStream]);
+        } else {
+            mpd.sendCommand('add', [stream]).then(function(response) {
+                console.log(response);
+            });
         }
-
     };
 
     $scope.progress = function(event) {
@@ -192,7 +198,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.add = function(item) {
-        console.log(item);
         mpd.sendCommand('add', [item]);
         $scope.getPlaylist();
     };
