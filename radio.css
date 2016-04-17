@@ -55,6 +55,11 @@
     max-width: 75%;
 }
 
+.current .filename {
+    max-width: 60%;
+    height: 20px;
+}
+
 .browse .path {
     height: 35px;
     padding: 5px 0 10px 5px;

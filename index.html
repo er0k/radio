@@ -107,7 +107,7 @@
                             <option value="Filename">filename</option>
                         </select>
                         <input type="text" name="what" data-ng-model="what" value="{{what}}">
-                        <input type="submit" class="btn btn-sm btn-default" ng-click="searchSubmit(search)">
+                        <input type="submit" class="btn btn-sm btn-default" ng-click="submitSearch(search)">
                     </form>
                     <div class="results">
                         <ul class="items">
@@ -124,7 +124,16 @@
                 </div>
             </uib-tab>
 
-            <uib-tab index="4" heading="listen" class="tab">
+            <uib-tab index="4" heading="stream" class="tab">
+                <div class="stream">
+                    <form>
+                        <input type="text" ng-model="stream" value="stream">
+                        <input type="submit" class="btn btn-sm btn-default" ng-click="submitStream(stream)">
+                    </form>
+                </div>
+            </uib-tab>
+
+            <uib-tab index="5" heading="listen" class="tab">
                 <div class="listen">
                     <div class="player">
                         <audio src="/stream" controls="true" preload="none"></audio>
@@ -135,7 +144,7 @@
                 </div>
             </uib-tab>
 
-            <uib-tab index="5" heading="chat" class="tab">
+            <uib-tab index="6" heading="chat" class="tab">
                 <div class="chat">
                     <iframe class="chatframe" src="chat.html" scrolling="no" frameborder="0"></iframe>
                 </div>

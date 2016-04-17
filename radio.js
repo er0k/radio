@@ -35,6 +35,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.count = 1;
     $scope.path = '';
     $scope.activeTab = 0;
+    $scope.stream = '';
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -86,6 +87,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.results = {};
         $scope.what = what;
         mpd.sendCommand('search', [type, what]).then(function(data) {
+            console.log(data.length);
             var searchResults = [];
             data.forEach(function(item) {
                 var searchPathParts = getPathParts(item.file);
@@ -96,10 +98,14 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         });
     };
 
-    $scope.searchSubmit = function(form) {
+    $scope.submitSearch = function(form) {
         var what = form.what.$modelValue;
         var type = form.type.$modelValue;
         $scope.search(type, what);
+    };
+
+    $scope.submitStream = function(form) {
+        console.log(form);
     };
 
     $scope.progress = function(event) {
@@ -175,6 +181,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.crop = function() {
         mpd.sendCommand('crop');
         $scope.getPlaylist();
+        $scope.getPlaylist(3500);
     };
 
     $scope.addRandom = function(num) {
@@ -183,6 +190,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.add = function(item) {
+        console.log(item);
         mpd.sendCommand('add', [item]);
         $scope.getPlaylist();
     };
@@ -208,6 +216,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.pathParts = getPathParts('');
         $scope.directories = [];
         $scope.files = [];
+        $scope.what = '';
     };
 
     $scope.moveUp = function(pos) {
@@ -228,6 +237,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.delete = function(pos) {
         mpd.sendCommand('delete', [pos]);
         $scope.getPlaylist();
+        $scope.getPlaylist(3500);
     };
 
     function getPathParts(path) {
