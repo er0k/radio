@@ -34,7 +34,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     $scope.count = 1;
     $scope.path = '';
-    $scope.activeTab = 0;
+    $scope.activeTab = 4;
     $scope.stream = '';
 
     $scope.getStatus = function() {
@@ -86,6 +86,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.what = what;
+        $scope.type = type;
         mpd.sendCommand('search', [type, what]).then(function(data) {
             console.log(data.length);
             var searchResults = [];
@@ -98,14 +99,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         });
     };
 
-    $scope.submitSearch = function(form) {
-        var what = form.what.$modelValue;
-        var type = form.type.$modelValue;
-        $scope.search(type, what);
-    };
-
-    $scope.submitStream = function(form) {
-        console.log(form);
+    $scope.addStream = function(stream) {
+        console.log(stream);
     };
 
     $scope.progress = function(event) {
