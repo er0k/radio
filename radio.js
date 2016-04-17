@@ -83,6 +83,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
 
     $scope.search = function(type, what) {
+        type = type || 'Artist';
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.what = what;
@@ -100,7 +101,13 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.addStream = function(stream) {
-        console.log(stream);
+        var regex = /https:\/\/(soundcloud.com\/.*)/;
+        var found = stream.match(regex);
+        if (found != null) {
+            var mpdStream = 'soundcloud://url/' + found[1];
+            mpd.sendCommand('load', [mpdStream]);
+        }
+
     };
 
     $scope.progress = function(event) {
