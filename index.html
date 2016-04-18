@@ -49,8 +49,8 @@
                 <ol class="playlist">
                     <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
                         <span class="name">{{file.Name}}</span>
-                        <span class="artist">{{file.Artist}} - </span>
-                        <span class="title">{{file.Title}}</span>
+                        <span class="artist"><a ng-click="search('Artist', file.Artist)" href="#">{{file.Artist}}</a> - </span>
+                        <span class="title"><a ng-click="search('Title', file.Title)" href="#">{{file.Title}}</a></span>
                         <div class="filename">{{file.file}}</div>
                         <div class="control">
                             <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
@@ -99,14 +99,14 @@
 
             <uib-tab index="3" heading="search" class="tab">
                 <div class="search">
-                    <form ng-submit="search(type, what)">
-                        <select ng-model="type">
+                    <form ng-submit="search(searchFor.type, searchFor.what)">
+                        <select ng-model="searchFor.type">
                             <option value="Artist">artist</option>
                             <option value="Title">title</option>
                             <option value="Album">album</option>
                             <option value="Filename">filename</option>
                         </select>
-                        <input type="text" ng-model="what" value="{{what}}">
+                        <input type="text" ng-model="searchFor.what" value="{{searchFor.what}}" placeholder="search for a thing">
                     </form>
                     <div class="results">
                         <ul class="items">
@@ -126,7 +126,7 @@
             <uib-tab index="4" heading="stream" class="tab">
                 <div class="stream">
                     <form ng-submit="addStream(stream)">
-                        <input type="text" ng-model="stream" value="stream">
+                        <input type="text" ng-model="stream" value="stream" placeholder="add a stream">
                     </form>
                 </div>
             </uib-tab>

@@ -12,7 +12,7 @@ radio.factory('mpd', function($http) {
             }
             alerts = this.alerts;
             return $http.post('m.php', params).then(function(response) {
-                console.log(cmd, args, response.data);
+                // console.log(cmd, args, response.data);
                 // don't alert on these commands since they happen a lot
                 var nope = ['playlistinfo','listplaylists','lsinfo','search'];
                 if (!nope.includes(cmd)) {
@@ -26,7 +26,7 @@ radio.factory('mpd', function($http) {
                         }
                         var alert = { type: type, msg: cmd + ': ' + msg };
                     } else {
-                        var alert = { type: 'danger', msg: 'error! ' + response.data.error };
+                        var alert = { type: 'danger', msg: response.data.error };
                     }
                     this.alerts.push(alert);
                 }
@@ -57,6 +57,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.activeTab = 0;
     $scope.stream = '';
     $scope.alerts = mpd.alerts;
+    $scope.searchFor = {};
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -102,13 +103,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         });
     };
 
-
     $scope.search = function(type, what) {
         type = type || 'Artist';
         $scope.activeTab = 3;
         $scope.results = {};
-        $scope.what = what;
-        $scope.type = type;
+        $scope.searchFor = { type: type, what: what };
         mpd.sendCommand('search', [type, what]).then(function(data) {
             var searchResults = [];
             if (data.length > 0) {
@@ -249,7 +248,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.pathParts = getPathParts('');
         $scope.directories = [];
         $scope.files = [];
-        $scope.what = '';
+        $scope.searchFor = {};
     };
 
     $scope.moveUp = function(pos) {
