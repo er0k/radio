@@ -109,6 +109,7 @@
                         <input type="text" ng-model="searchFor.what" value="{{searchFor.what}}" placeholder="search for a thing">
                     </form>
                     <div class="results">
+                        <h4>{{resultsCount}} results</h4>
                         <ul class="items">
                             <li ng-repeat="result in results track by $index">
                                 <span class="file" ng-repeat="part in result.parts">

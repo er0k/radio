@@ -58,6 +58,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.stream = '';
     $scope.alerts = mpd.alerts;
     $scope.searchFor = {};
+    $scope.resultsCount = 0;
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -117,7 +118,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
                     searchResults.push(results);
                 });
             }
-
+            $scope.resultsCount = data.length;
             $scope.results = searchResults;
         });
     };
@@ -249,6 +250,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.directories = [];
         $scope.files = [];
         $scope.searchFor = {};
+        $scope.resultsCount = 0;
     };
 
     $scope.moveUp = function(pos) {
