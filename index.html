@@ -51,6 +51,7 @@
                         <span class="name">{{file.Name}}</span>
                         <span class="artist"><a ng-click="search('Artist', file.Artist)" href="#">{{file.Artist}}</a> - </span>
                         <span class="title"><a ng-click="search('Title', file.Title)" href="#">{{file.Title}}</a></span>
+                        <span class="album">[<a ng-click="search('Album', file.Album)" href="#">{{file.Album}}</a>]</span>
                         <div class="filename">{{file.file}}</div>
                         <div class="control">
                             <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
