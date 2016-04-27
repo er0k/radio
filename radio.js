@@ -55,7 +55,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     $scope.count = 1;
     $scope.activeTab = 0;
-    $scope.stream = '';
+    $scope.stream = {};
     $scope.alerts = mpd.alerts;
     $scope.searchFor = {};
     $scope.resultsCount = 0;
@@ -113,9 +113,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             var searchResults = [];
             if (data.length > 0) {
                 data.forEach(function(item) {
-                    var searchPathParts = getPathParts(item.file);
-                    var results = { path: item.file, parts: searchPathParts };
-                    searchResults.push(results);
+                    if (typeof item.file !== 'undefined') {
+                        var searchPathParts = getPathParts(item.file);
+                        var results = { path: item.file, parts: searchPathParts };
+                        searchResults.push(results);
+                    }
                 });
             }
             $scope.resultsCount = data.length;
@@ -131,6 +133,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         } else {
             $scope.add(stream);
         }
+        $scope.stream = { url: '' };
         $scope.getPlaylist(1000);
     };
 

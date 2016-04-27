@@ -126,8 +126,8 @@
 
             <uib-tab index="4" heading="stream" class="tab">
                 <div class="stream">
-                    <form ng-submit="addStream(stream)">
-                        <input type="text" ng-model="stream" value="stream" placeholder="add a stream">
+                    <form ng-submit="addStream(stream.url)">
+                        <input type="text" ng-model="stream.url" value="stream" placeholder="add a stream">
                     </form>
                 </div>
             </uib-tab>
