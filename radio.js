@@ -53,14 +53,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     var elapsedReal = 0;
     var elapsed = 0;
 
-    $scope.count = 1;
-    $scope.activeTab = 0;
-    $scope.stream = {};
-    $scope.alerts = mpd.alerts;
-    $scope.searchFor = {};
-    $scope.resultsCount = 0;
-    $scope.save = {};
-
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
             $scope.status = data;
@@ -255,11 +247,10 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.refresh = function() {
+        $scope.alerts = mpd.alerts;
         $scope.count = 1;
-        $scope.getStatus();
-        $scope.getCurrentSong();
-        $scope.getPlaylist();
-        $scope.getProgress();
+        $scope.activeTab = 0;
+        $scope.stream = {};
         $scope.results = {};
         $scope.path = '';
         $scope.pathParts = getPathParts('');
@@ -268,6 +259,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.searchFor = {};
         $scope.resultsCount = 0;
         $scope.save = {};
+        
+        $scope.getStatus();
+        $scope.getProgress();
+        $scope.getCurrentSong();
+        $scope.getPlaylist();
         $scope.addAlert();
     };
 
@@ -332,8 +328,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         return {path: path, name: name}
     }
 
-    $scope.getStatus();
-    $scope.getProgress();
+    $scope.refresh();
 
     $interval($scope.getStatus, statusTimeout);
     $interval($scope.getProgress, progressTimeout);
