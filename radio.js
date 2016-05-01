@@ -59,6 +59,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.alerts = mpd.alerts;
     $scope.searchFor = {};
     $scope.resultsCount = 0;
+    $scope.save = {};
 
     $scope.getStatus = function() {
         $http.get(statusFile).success(function(data) {
@@ -135,6 +136,11 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         }
         $scope.stream = { url: '' };
         $scope.getPlaylist(1000);
+    };
+
+    $scope.savePlaylist = function(playlistName) {
+        mpd.sendCommand('save', [playlistName]);
+        $scope.save = {};
     };
 
     $scope.progress = function(event) {

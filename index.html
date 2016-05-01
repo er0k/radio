@@ -46,22 +46,26 @@
         <uib-tabset active="activeTab" justified="true" class="tabs">
 
             <uib-tab index="0" heading="playlist" class="tab">
-                <ol class="playlist">
-                    <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
-                        <span class="name">{{file.Name}}</span>
-                        <span class="artist"><a ng-click="search('Artist', file.Artist)" href="#">{{file.Artist}}</a> - </span>
-                        <span class="title"><a ng-click="search('Title', file.Title)" href="#">{{file.Title}}</a></span>
-                        <span class="album">[<a ng-click="search('Album', file.Album)" href="#">{{file.Album}}</a>]</span>
-                        <div class="filename">{{file.file}}</div>
-                        <div class="control">
-                            <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
-                            <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
-                            <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
-                            <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
-                        </div>
-
-                    </li>
-                </ol>
+                <div class="playlist">
+                    <form ng-submit="savePlaylist(save.name)">
+                        <input type="text" ng-model="save.name" value="{{save.name}}" placeholder="save playlist">
+                    </form>
+                    <ol>
+                        <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
+                            <span class="name">{{file.Name}}</span>
+                            <span class="artist"><a ng-click="search('Artist', file.Artist)" href="#">{{file.Artist}}</a> - </span>
+                            <span class="title"><a ng-click="search('Title', file.Title)" href="#">{{file.Title}}</a></span>
+                            <span class="album">[<a ng-click="search('Album', file.Album)" href="#">{{file.Album}}</a>]</span>
+                            <div class="filename">{{file.file}}</div>
+                            <div class="control">
+                                <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
+                                <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
+                                <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
+                                <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
             </uib-tab>
 
             <uib-tab index="1" heading="saved" class="tab" ng-click="browseSaved()">
