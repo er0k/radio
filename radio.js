@@ -79,23 +79,21 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.browse = function (path) {
+        path = path || '';
         $scope.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 2;
-        path = path || '';
         $scope.path = path;
         $scope.pathParts = getPathParts(path);
+        $scope.directories = [];
+        $scope.files = [];
         mpd.sendCommand('lsinfo', [path]).then(function(data) {
             $scope.closeAlert(0);
-            $scope.directories = [];
-            $scope.files = [];
             data.forEach(function(item) {
                 if (item.directory != null) {
-                    var dir = prettifyFilepath(item.directory);
-                    $scope.directories.push(dir);
+                    $scope.directories.push(prettifyFilepath(item.directory));
                 }
                 if (item.file != null) {
-                    var file = prettifyFilepath(item.file);
-                    $scope.files.push(file);
+                    $scope.files.push(prettifyFilepath(item.file));
                 }
             });
         });
@@ -108,8 +106,9 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.search = function(type, what) {
-        $scope.addAlert('warning', 'loading...', 30000);
         type = type || 'Artist';
+        what = what || '';
+        $scope.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.searchFor = { type: type, what: what };
