@@ -105,13 +105,13 @@
             <uib-tab index="3" heading="search" class="tab">
                 <div class="search">
                     <form ng-submit="search(searchFor.type, searchFor.what)">
+                        <input type="text" ng-model="searchFor.what" value="{{searchFor.what}}" placeholder="search for a thing">
                         <select ng-model="searchFor.type">
                             <option value="Artist">artist</option>
                             <option value="Title">title</option>
                             <option value="Album">album</option>
                             <option value="Filename">filename</option>
                         </select>
-                        <input type="text" ng-model="searchFor.what" value="{{searchFor.what}}" placeholder="search for a thing">
                     </form>
                     <div class="results">
                         <h4>{{resultsCount}} results</h4>

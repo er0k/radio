@@ -111,6 +111,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 3;
         $scope.results = {};
+        $scope.resultsCount = '?';
         $scope.searchFor = { type: type, what: what };
         mpd.sendCommand('search', [type, what]).then(function(data) {
             $scope.closeAlert(0);
@@ -185,7 +186,10 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.addAlert = function(type, msg, time) {
-        mpd.alerts.push({ type: type, msg: msg, time: time });
+        msg = msg || 'o_O';
+        type = type || 'info';
+        time = time || 5000;
+        $scope.alerts.push({ type: type, msg: msg, time: time });
     };
 
     $scope.closeAlert = function(index) {
@@ -264,6 +268,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.searchFor = {};
         $scope.resultsCount = 0;
         $scope.save = {};
+        $scope.addAlert();
     };
 
     $scope.moveUp = function(pos) {
