@@ -24,9 +24,9 @@ radio.factory('mpd', function($http) {
                             var type = 'warning';
                             var msg = response.data;
                         }
-                        var alert = { type: type, msg: cmd + ': ' + msg };
+                        var alert = { type: type, msg: cmd + ': ' + msg, time: 3000 };
                     } else {
-                        var alert = { type: 'danger', msg: response.data.error };
+                        var alert = { type: 'danger', msg: response.data.error, time: 10000 };
                     }
                     this.alerts.push(alert);
                 }
@@ -79,11 +79,13 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.browse = function (path) {
+        $scope.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 2;
         path = path || '';
         $scope.path = path;
         $scope.pathParts = getPathParts(path);
         mpd.sendCommand('lsinfo', [path]).then(function(data) {
+            $scope.closeAlert(0);
             $scope.directories = [];
             $scope.files = [];
             data.forEach(function(item) {
@@ -106,11 +108,13 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.search = function(type, what) {
+        $scope.addAlert('warning', 'loading...', 30000);
         type = type || 'Artist';
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.searchFor = { type: type, what: what };
         mpd.sendCommand('search', [type, what]).then(function(data) {
+            $scope.closeAlert(0);
             var searchResults = [];
             if (data.length > 0) {
                 data.forEach(function(item) {
@@ -181,8 +185,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.percent = Math.round(percent);
     };
 
-    $scope.addAlert = function(type, msg) {
-        $scope.alerts.push({ type: type, msg: msg });
+    $scope.addAlert = function(type, msg, time) {
+        mpd.alerts.push({ type: type, msg: msg, time: time });
     };
 
     $scope.closeAlert = function(index) {
@@ -260,6 +264,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.files = [];
         $scope.searchFor = {};
         $scope.resultsCount = 0;
+        $scope.save = {};
     };
 
     $scope.moveUp = function(pos) {
