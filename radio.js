@@ -3,6 +3,14 @@ var radio = angular.module('radio', ['ngAnimate','ui.bootstrap']);
 radio.factory('mpd', function($http) {
     return {
         alerts: [],
+        addAlert: function (type, msg, time) {
+            type = type || 'info';
+            msg = msg || 'o_O';
+            time = time || 5000;
+            var alert = { type: type, msg: msg, time: time };
+            console.log(alert);
+            this.alerts.push(alert);
+        },
         sendCommand: function (cmd, args) {
             args = args || [];
             var params = { cmd: cmd };
@@ -10,7 +18,7 @@ radio.factory('mpd', function($http) {
                 var key = 'a' + i;
                 params[key] = args[i];
             }
-            alerts = this.alerts;
+            var self = this;
             return $http.post('m.php', params).then(function(response) {
                 // console.log(cmd, args, response.data);
                 // don't alert on these commands since they happen a lot
@@ -18,17 +26,13 @@ radio.factory('mpd', function($http) {
                 if (!nope.includes(cmd)) {
                     if (typeof response.data.error === 'undefined') {
                         if (response.data == true) {
-                            var type = 'success';
-                            var msg = 'OK';
+                            self.addAlert('success', cmd + ': OK', 3000);
                         } else {
-                            var type = 'warning';
-                            var msg = response.data;
+                            self.addAlert('warning', cmd + ': ' + response.data, 5000);
                         }
-                        var alert = { type: type, msg: cmd + ': ' + msg, time: 3000 };
                     } else {
-                        var alert = { type: 'danger', msg: response.data.error, time: 10000 };
+                        self.addAlert('danger', cmd + ': ' + response.data.error, 10000);
                     }
-                    this.alerts.push(alert);
                 }
 
                 return response.data;
@@ -72,7 +76,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
 
     $scope.browse = function (path) {
         path = path || '';
-        $scope.addAlert('warning', 'loading...', 30000);
+        mpd.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 2;
         $scope.path = path;
         $scope.pathParts = getPathParts(path);
@@ -100,7 +104,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.search = function(type, what) {
         type = type || 'Artist';
         what = what || '';
-        $scope.addAlert('warning', 'loading...', 30000);
+        mpd.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.resultsCount = '?';
@@ -177,15 +181,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.percent = Math.round(percent);
     };
 
-    $scope.addAlert = function(type, msg, time) {
-        msg = msg || 'o_O';
-        type = type || 'info';
-        time = time || 5000;
-        $scope.alerts.push({ type: type, msg: msg, time: time });
-    };
-
     $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
+        mpd.alerts.splice(index, 1);
     };
 
     $scope.isCurrentSong = function(file) {
@@ -264,7 +261,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.getProgress();
         $scope.getCurrentSong();
         $scope.getPlaylist();
-        $scope.addAlert();
+        mpd.addAlert();
     };
 
     $scope.moveUp = function(pos) {
