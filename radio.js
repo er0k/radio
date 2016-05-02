@@ -8,7 +8,6 @@ radio.factory('mpd', function($http) {
             msg = msg || 'o_O';
             time = time || 5000;
             var alert = { type: type, msg: msg, time: time };
-            console.log(alert);
             this.alerts.push(alert);
         },
         sendCommand: function (cmd, args) {
@@ -20,7 +19,6 @@ radio.factory('mpd', function($http) {
             }
             var self = this;
             return $http.post('m.php', params).then(function(response) {
-                // console.log(cmd, args, response.data);
                 // don't alert on these commands since they happen a lot
                 var nope = ['playlistinfo','listplaylists','lsinfo','search'];
                 if (!nope.includes(cmd)) {
@@ -83,7 +81,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.directories = [];
         $scope.files = [];
         mpd.sendCommand('lsinfo', [path]).then(function(data) {
-            $scope.closeAlert(0);
             data.forEach(function(item) {
                 if (item.directory != null) {
                     $scope.directories.push(prettifyFilepath(item.directory));
@@ -92,6 +89,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
                     $scope.files.push(prettifyFilepath(item.file));
                 }
             });
+            $scope.closeAlert(0);
         });
     };
 
@@ -110,7 +108,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.resultsCount = '?';
         $scope.searchFor = { type: type, what: what };
         mpd.sendCommand('search', [type, what]).then(function(data) {
-            $scope.closeAlert(0);
             var searchResults = [];
             if (data.length > 0) {
                 data.forEach(function(item) {
@@ -123,6 +120,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             }
             $scope.resultsCount = data.length;
             $scope.results = searchResults;
+            $scope.closeAlert(0);
         });
     };
 
