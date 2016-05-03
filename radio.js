@@ -72,6 +72,59 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         i++;
     };
 
+    $scope.getProgress = function() {
+        var total = 0;
+        var percent = 0;
+        if (elapsedReal > 0) {
+            elapsedGuess = elapsedReal;
+            elapsedReal = 0;
+        } else {
+            elapsedGuess = parseFloat(elapsed) + (progressTimeout / 1000);
+        }
+        elapsed = elapsedGuess;
+        if ($scope.song != null) {
+            total = parseInt($scope.song.Time);
+            if (isNaN(total)) {
+                total = elapsed;
+            }
+            percent = (elapsed / total) * 100;
+        }
+
+        $scope.hmElapsed = convertTime(elapsed);
+        $scope.hmTotal = convertTime(total);
+
+        $scope.elapsed = elapsed;
+        $scope.total = total;
+        $scope.percent = Math.round(percent);
+    };
+
+    $scope.refresh = function() {
+        $scope.alerts = mpd.alerts;
+        $scope.count = 1;
+        $scope.activeTab = 0;
+        $scope.stream = {};
+        $scope.results = {};
+        $scope.path = '';
+        $scope.pathParts = getPathParts('');
+        $scope.directories = [];
+        $scope.files = [];
+        $scope.searchFor = {};
+        $scope.resultsCount = 0;
+        $scope.save = {};
+
+        $scope.getStatus();
+        $scope.getProgress();
+        $scope.getCurrentSong();
+        $scope.getPlaylist();
+        mpd.addAlert();
+    };
+
+    $scope.browseSaved = function ()  {
+        mpd.sendCommand('listplaylists').then(function(data) {
+            $scope.lists = Object.keys(data);
+        });
+    };
+
     $scope.browse = function (path) {
         path = path || '';
         mpd.addAlert('warning', 'loading...', 30000);
@@ -90,12 +143,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
                 }
             });
             $scope.closeAlert(0);
-        });
-    };
-
-    $scope.browseSaved = function ()  {
-        mpd.sendCommand('listplaylists').then(function(data) {
-            $scope.lists = Object.keys(data);
         });
     };
 
@@ -153,32 +200,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         mpd.sendCommand('seekcur', [time]);
     };
 
-    $scope.getProgress = function() {
-        var total = 0;
-        var percent = 0;
-        if (elapsedReal > 0) {
-            elapsedGuess = elapsedReal;
-            elapsedReal = 0;
-        } else {
-            elapsedGuess = parseFloat(elapsed) + (progressTimeout / 1000);
-        }
-        elapsed = elapsedGuess;
-        if ($scope.song != null) {
-            total = parseInt($scope.song.Time);
-            if (isNaN(total)) {
-                total = elapsed;
-            }
-            percent = (elapsed / total) * 100;
-        }
-
-        $scope.hmElapsed = convertTime(elapsed);
-        $scope.hmTotal = convertTime(total);
-
-        $scope.elapsed = elapsed;
-        $scope.total = total;
-        $scope.percent = Math.round(percent);
-    };
-
     $scope.closeAlert = function(index) {
         mpd.alerts.splice(index, 1);
     };
@@ -203,7 +224,12 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
                 $scope.playlist = data;
             });
         }, timeout);
-    }
+    };
+
+    $scope.play = function(pos) {
+        mpd.sendCommand('play', [pos]);
+        $scope.getStatus();
+    };
 
     $scope.skip = function() {
         mpd.sendCommand('next');
@@ -241,27 +267,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         mpd.sendCommand('crossfade', [xfade]);
     };
 
-    $scope.refresh = function() {
-        $scope.alerts = mpd.alerts;
-        $scope.count = 1;
-        $scope.activeTab = 0;
-        $scope.stream = {};
-        $scope.results = {};
-        $scope.path = '';
-        $scope.pathParts = getPathParts('');
-        $scope.directories = [];
-        $scope.files = [];
-        $scope.searchFor = {};
-        $scope.resultsCount = 0;
-        $scope.save = {};
-        
-        $scope.getStatus();
-        $scope.getProgress();
-        $scope.getCurrentSong();
-        $scope.getPlaylist();
-        mpd.addAlert();
-    };
-
     $scope.moveUp = function(pos) {
         mpd.sendCommand('move', [pos, parseInt(pos) - 1]);
         $scope.getPlaylist();
@@ -272,16 +277,12 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         $scope.getPlaylist();
     };
 
-    $scope.play = function(pos) {
-        mpd.sendCommand('play', [pos]);
-        $scope.getStatus();
-    };
-
     $scope.delete = function(pos) {
         mpd.sendCommand('delete', [pos]);
         $scope.getPlaylist();
         $scope.getPlaylist(3500);
     };
+
 
     function getPathParts(path) {
         var parts = [{name: 'Music', link: ''}];
