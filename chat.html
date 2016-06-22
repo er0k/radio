@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/candy-libs.min.js"></script>
 	<script type="text/javascript" src="js/candy.min.js"></script>
+	<script type="text/javascript" src="js/candy-notif.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			$.getJSON('u.php', function(data) {
@@ -21,6 +22,7 @@
 					},
 					view: { assets: 'res/' }
 				});
+                                CandyShop.Notifications.init();
 				Candy.Core.connect(data.user + '@' + server, data.pass);
 			});
 		});
