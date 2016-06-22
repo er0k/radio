@@ -100,7 +100,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.search = function(type, what) {
-        type = type || 'Artist';
+        type = type || 'any';
         what = what || '';
         mpd.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 3;

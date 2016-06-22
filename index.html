@@ -107,6 +107,7 @@
                     <form ng-submit="search(searchFor.type, searchFor.what)">
                         <input type="text" ng-model="searchFor.what" value="{{searchFor.what}}" placeholder="search for a thing">
                         <select ng-model="searchFor.type">
+                            <option value="any">any</option>
                             <option value="Artist">artist</option>
                             <option value="Title">title</option>
                             <option value="Album">album</option>
