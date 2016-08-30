@@ -7,3 +7,5 @@
 - streams don't get metadata at first
 - stream youtube [ mpc add $(youtube-dl --prefer-insecure -g -f140 sTPtBvcYkO8) ]
      https://bbs.archlinux.org/viewtopic.php?id=180478
+- add flag button for bad songs
+- add song length to playlist
