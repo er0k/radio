@@ -5,8 +5,7 @@
 - controls and current info in a new tab?
 - pagination
 - streams don't get metadata at first
-- stream youtube [ mpc add $(youtube-dl --prefer-insecure -g -f140 sTPtBvcYkO8) ]
-     https://bbs.archlinux.org/viewtopic.php?id=180478
+- add youtube title and length to playlist/song info
 - add flag button for bad songs
 - add song length to playlist
 - add song info to window title

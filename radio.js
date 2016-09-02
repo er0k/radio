@@ -129,6 +129,15 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         if (found != null) {
             var scStream = 'soundcloud://url/' + found[1];
             mpd.sendCommand('load', [scStream]);
+        } else if (stream.includes('youtube.com')) {
+            var params = { url: stream, dl: true, info: true }
+            $http.post('youtube.php', params).then(function(response) {
+                if (response.data) {
+                    $scope.add(response.data.stream);
+                    mpd.addAlert('success', response.data.info.title, 3000);
+                    console.log(response.data.info);
+                }
+            });
         } else {
             $scope.add(stream);
         }
