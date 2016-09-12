@@ -77,8 +77,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         if (isNaN($scope.total) || $scope.elapsed > $scope.total) {
             $scope.total = $scope.elapsed;
         }
-        $scope.hmElapsed = convertTime($scope.elapsed);
-        $scope.hmTotal = convertTime($scope.total);
+        $scope.hmElapsed = $scope.convertTime($scope.elapsed);
+        $scope.hmTotal = $scope.convertTime($scope.total);
         $scope.percent = Math.round(($scope.elapsed / $scope.total) * 100);
     };
 
@@ -248,6 +248,8 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     };
 
     $scope.moveUp = function(pos) {
+        // use 'moveid' here when I finally switch to dnd
+        // moving by pos can cause problems with multiple clients
         mpd.sendCommand('move', [pos, parseInt(pos) - 1]);
     };
 
@@ -283,7 +285,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         return parts;
     }
 
-    function convertTime(seconds) {
+    $scope.convertTime = function(seconds) {
         if (isNaN(seconds)) {
             return '00:00';
         }
@@ -294,7 +296,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         } else {
             return date.toISOString().substr(14, 5);
         }
-    }
+    };
 
     function prettifyFilepath(path) {
         var parts = path.split('/');

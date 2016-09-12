@@ -56,6 +56,7 @@
                             <span class="artist"><a ng-click="search('Artist', file.artist)" href="#">{{file.artist}}</a> - </span>
                             <span class="title"><a ng-click="search('Title', file.title)" href="#">{{file.title}}</a></span>
                             <span class="album">[<a ng-click="search('Album', file.album)" href="#">{{file.album}}</a>]</span>
+                            <span class="time">{{convertTime(file.time)}}</span>
                             <div class="filename">{{file.file}}</div>
                             <div class="control">
                                 <button class="play btn btn-sm btn-default" ng-click="play(file.pos)">&#x25BA;</button>
