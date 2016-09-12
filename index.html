@@ -23,11 +23,11 @@
             </uib-progressbar>
 
             <span class="info">
-                {{song.Name}}<br />
-                <a ng-click="search('Artist', song.Artist)" href="#">{{song.Artist}}</a> -
-                <a ng-click="search('Title', song.Title)" href="#">{{song.Title}}</a>
-                [<a ng-click="search('Album', song.Album)" href="#">{{song.Album}}</a>]
-                <span class="listeners">({{status.listeners}} listeners)</span>
+                {{song.name}}<br />
+                <a ng-click="search('Artist', song.artist)" href="#">{{song.artist}}</a> -
+                <a ng-click="search('Title', song.title)" href="#">{{song.title}}</a>
+                [<a ng-click="search('Album', song.album)" href="#">{{song.album}}</a>]
+                <span class="listeners">({{listeners.count}} listeners)</span>
                 <div class="filename">{{song.file}}</div>
             </span>
             <span class="control">
@@ -52,16 +52,16 @@
                     </form>
                     <ol>
                         <li ng-repeat="file in playlist" ng-class="{'currentSong': isCurrentSong(file)}">
-                            <span class="name">{{file.Name}}</span>
-                            <span class="artist"><a ng-click="search('Artist', file.Artist)" href="#">{{file.Artist}}</a> - </span>
-                            <span class="title"><a ng-click="search('Title', file.Title)" href="#">{{file.Title}}</a></span>
-                            <span class="album">[<a ng-click="search('Album', file.Album)" href="#">{{file.Album}}</a>]</span>
+                            <span class="name">{{file.name}}</span>
+                            <span class="artist"><a ng-click="search('Artist', file.artist)" href="#">{{file.artist}}</a> - </span>
+                            <span class="title"><a ng-click="search('Title', file.title)" href="#">{{file.title}}</a></span>
+                            <span class="album">[<a ng-click="search('Album', file.album)" href="#">{{file.album}}</a>]</span>
                             <div class="filename">{{file.file}}</div>
                             <div class="control">
-                                <button class="play btn btn-sm btn-default" ng-click="play(file.Pos)">&#x25BA;</button>
-                                <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.Pos)">&#x25B2;</button>
-                                <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.Pos)">&#x25BC;</button>
-                                <button class="delete btn btn-sm btn-danger" ng-click="delete(file.Pos)">&#x274c;</button>
+                                <button class="play btn btn-sm btn-default" ng-click="play(file.pos)">&#x25BA;</button>
+                                <button class="moveUp btn btn-sm btn-default" ng-click="moveUp(file.pos)">&#x25B2;</button>
+                                <button class="moveDown btn btn-sm btn-default" ng-click="moveDown(file.pos)">&#x25BC;</button>
+                                <button class="delete btn btn-sm btn-danger" ng-click="delete(file.pos)">&#x274c;</button>
                             </div>
                         </li>
                     </ol>

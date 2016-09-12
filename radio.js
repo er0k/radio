@@ -20,7 +20,7 @@ radio.factory('mpd', function($http) {
             var self = this;
             return $http.post('m.php', params).then(function(response) {
                 // don't alert on these commands since they happen a lot
-                var nope = ['playlistinfo','listplaylists','lsinfo','search'];
+                var nope = ['status','idle','playlistinfo','listplaylists','lsinfo','search'];
                 if (!nope.includes(cmd)) {
                     if (typeof response.data.error === 'undefined') {
                         if (response.data == true) {
@@ -45,31 +45,78 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     var statusTimeout = 3000;
     var progressTimeout = 1000;
     var songId = 0;
-    var statusFile = '/radio/mpd-status.json';
-    var songFile = '/radio/mpd-song.json';
-    var lastSongId;
-    var songLength = 0;
-    var songTime = 0;
-    var i = 0;
-    var elapsedGuess = 0;
-    var elapsedReal = 0;
     var elapsed = 0;
+    var timer;
 
-    $scope.getStatus = function() {
-        $http.get(statusFile).success(function(data) {
-            $scope.status = data;
-            lastSongId = songId;
-            songId = $scope.status.songid;
-            elapsedReal = $scope.status.elapsed;
+    $scope.update = function(timeout) {
+        timeout = timeout || 300;
+        setTimeout(function() {
+            $http.get('/radio/mpd.json').success(function(data) {
+                console.log(data)
+                $scope.status = data.status;
+                $scope.song = data.song;
+                $scope.listeners = data.listeners;
+                $scope.playlist = data.playlist;
+                $scope.xfadeStatus = $scope.status.xfade != null ? 1 : 0;
+                $scope.total = parseInt($scope.song.time);
+                $scope.startCountingAt($scope.status.elapsed);
+                songId = $scope.status.songid;
+            });
+        }, timeout);
+    };
 
-            $scope.xfadeStatus = $scope.status.xfade != null ? 1 : 0;
+    $scope.startCountingAt = function(time) {
+        time = time || 0
+        $interval.cancel(timer);
+        $scope.elapsed = parseFloat(time);
+        timer = $interval(count, 1000);
+    };
 
-            if ($scope.status.songid != lastSongId) {
-                $scope.getCurrentSong();
-                $scope.getPlaylist();
-            }
+    function count() {
+        $scope.elapsed += 1;
+        if (isNaN($scope.total) || $scope.elapsed > $scope.total) {
+            $scope.total = $scope.elapsed;
+        }
+        $scope.hmElapsed = convertTime($scope.elapsed);
+        $scope.hmTotal = convertTime($scope.total);
+        $scope.percent = Math.round(($scope.elapsed / $scope.total) * 100);
+    };
+
+    $scope.refresh = function() {
+        $scope.alerts = mpd.alerts;
+        $scope.count = 1;
+        $scope.activeTab = 0;
+        $scope.stream = {};
+        $scope.results = {};
+        $scope.path = '';
+        $scope.pathParts = getPathParts('');
+        $scope.directories = [];
+        $scope.files = [];
+        $scope.searchFor = {};
+        $scope.resultsCount = 0;
+        $scope.save = {};
+
+        $scope.update(0);
+        $scope.getElapsed(1000);
+        mpd.addAlert();
+    };
+
+    $scope.getElapsed = function(timeout) {
+        timeout = timeout || 500;
+        setTimeout(function() {
+            mpd.sendCommand('status').then(function(data) {
+                $scope.startCountingAt(data.elapsed);
+            });
+        }, timeout);
+    };
+
+    $scope.idle = function() {
+        mpd.sendCommand('idle').then(function(data) {
+            console.log(data);
+            $scope.update();
+            $scope.idle();
+            // figure out the timeout
         });
-        i++;
     };
 
     $scope.browse = function (path) {
@@ -142,7 +189,6 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             $scope.add(stream);
         }
         $scope.stream = { url: '' };
-        $scope.getPlaylist(1000);
     };
 
     $scope.savePlaylist = function(playlistName) {
@@ -154,95 +200,46 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         var totalWidth = angular.element(document.getElementById('progressbar')).prop('offsetWidth');
         var x = event.offsetX;
         var percentage = (x / totalWidth);
-        var time = Math.round(percentage * $scope.song.Time);
+        var time = Math.round(percentage * $scope.song.time);
 
-        $scope.elapsed = time;
-        elapsedReal = time;
-
-        mpd.sendCommand('seekcur', [time]);
-    };
-
-    $scope.getProgress = function() {
-        var total = 0;
-        var percent = 0;
-        if (elapsedReal > 0) {
-            elapsedGuess = elapsedReal;
-            elapsedReal = 0;
-        } else {
-            elapsedGuess = parseFloat(elapsed) + (progressTimeout / 1000);
-        }
-        elapsed = elapsedGuess;
-        if ($scope.song != null) {
-            total = parseInt($scope.song.Time);
-            if (isNaN(total)) {
-                total = elapsed;
-            }
-            percent = (elapsed / total) * 100;
-        }
-
-        $scope.hmElapsed = convertTime(elapsed);
-        $scope.hmTotal = convertTime(total);
-
-        $scope.elapsed = elapsed;
-        $scope.total = total;
-        $scope.percent = Math.round(percent);
-    };
+        mpd.sendCommand('seekcur', [time]).then(function() {
+            $scope.elapsed = time;
+        });
+    }; 
 
     $scope.closeAlert = function(index) {
         mpd.alerts.splice(index, 1);
     };
 
     $scope.isCurrentSong = function(file) {
-        if (file.Id == songId) {
+        if (file.id == songId) {
             return true;
         }
         return false;
     };
 
-    $scope.getCurrentSong = function () {
-        $http.get(songFile).success(function(data) {
-            $scope.song = data;
-        });
-    };
-
-    $scope.getPlaylist = function(timeout) {
-        timeout = timeout || 500;
-        setTimeout(function() {
-            mpd.sendCommand('playlistinfo').then(function(data) {
-                $scope.playlist = data;
-            });
-        }, timeout);
-    }
-
     $scope.skip = function() {
         mpd.sendCommand('next');
-        $scope.getStatus();
     };
 
     $scope.shuffle = function() {
         mpd.sendCommand('shuffle');
-        $scope.getPlaylist();
     };
 
     $scope.crop = function() {
         mpd.sendCommand('crop');
-        $scope.getPlaylist();
-        $scope.getPlaylist(3500);
     };
 
     $scope.addRandom = function(num) {
         mpd.sendCommand('addRandomSong', [num]);
-        $scope.getPlaylist(2000);
     };
 
     $scope.add = function(item) {
         mpd.sendCommand('add', [item]);
-        $scope.getPlaylist(1000);
     };
 
     $scope.load = function(list) {
         mpd.sendCommand('load', [list]);
-        $scope.getPlaylist(1000);
     };
 
     $scope.xfade = function() {
@@ -250,46 +247,20 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
         mpd.sendCommand('crossfade', [xfade]);
     };
 
-    $scope.refresh = function() {
-        $scope.alerts = mpd.alerts;
-        $scope.count = 1;
-        $scope.activeTab = 0;
-        $scope.stream = {};
-        $scope.results = {};
-        $scope.path = '';
-        $scope.pathParts = getPathParts('');
-        $scope.directories = [];
-        $scope.files = [];
-        $scope.searchFor = {};
-        $scope.resultsCount = 0;
-        $scope.save = {};
-        
-        $scope.getStatus();
-        $scope.getProgress();
-        $scope.getCurrentSong();
-        $scope.getPlaylist();
-        mpd.addAlert();
-    };
-
     $scope.moveUp = function(pos) {
         mpd.sendCommand('move', [pos, parseInt(pos) - 1]);
-        $scope.getPlaylist();
     };
 
     $scope.moveDown = function(pos) {
         mpd.sendCommand('move', [pos, parseInt(pos) + 1]);
-        $scope.getPlaylist();
     };
 
     $scope.play = function(pos) {
         mpd.sendCommand('play', [pos]);
-        $scope.getStatus();
     };
 
     $scope.delete = function(pos) {
         mpd.sendCommand('delete', [pos]);
-        $scope.getPlaylist();
-        $scope.getPlaylist(3500);
     };
 
     function getPathParts(path) {
@@ -333,8 +304,5 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     }
 
     $scope.refresh();
-
-    $interval($scope.getStatus, statusTimeout);
-    $interval($scope.getProgress, progressTimeout);
-
+    $scope.idle();
 });
