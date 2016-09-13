@@ -23,7 +23,12 @@ if ($shouldGetInfo) {
     $output['info'] = getInfo($id);
 }
 
+$json = json_encode($output);
+
 echo json_encode($output);
+
+$filename = '/tmp/' . md5($output['stream']) . '.json';
+file_put_contents($filename, $json);
 
 
 function getVideoIDFromUrl($url)
