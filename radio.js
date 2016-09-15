@@ -40,7 +40,7 @@ radio.factory('mpd', function($http) {
 });
 
 
-radio.controller('dj', function ($scope, $http, $interval, mpd) {
+radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
 
     var statusTimeout = 3000;
     var progressTimeout = 1000;
@@ -51,7 +51,7 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
     $scope.update = function(timeout) {
         timeout = timeout || 300;
         setTimeout(function() {
-            $http.get('/radio/mpd.json').success(function(data) {
+            $http.get('/radio/mpdj.json').success(function(data) {
                 console.log(data)
                 $scope.status = data.status;
                 $scope.song = data.song;
@@ -216,6 +216,13 @@ radio.controller('dj', function ($scope, $http, $interval, mpd) {
             return true;
         }
         return false;
+    };
+
+    $scope.nope = function() {
+        if ($window.confirm('this song sucks?')) {
+            mpd.sendCommand('next');
+            mpd.sendCommand('log', [$scope.song.file]);
+        }
     };
 
     $scope.skip = function() {

@@ -36,6 +36,11 @@ class mpde extends MPD
         return true;
     }
 
+    public function log($msg, $type = 'nope')
+    {
+        return error_log($msg . "\n", 3, sprintf('/etc/mpdj/%s', $type));
+    }
+
     private function getPosition()
     {
         $status = $this->status();
@@ -48,11 +53,30 @@ class mpde extends MPD
         $db = $this->getDb();
 
         $randomSong = $db[array_rand($db)];
-        while (!$this->isFile($randomSong)) {
+        while (!$this->isFile($randomSong) && !$this->isGood($randomSong)) {
             $randomSong = $db[array_rand($db)];
         }
 
         return $randomSong;
+    }
+
+    private function isGood($song)
+    {
+        $badSongs = file('/etc/mpdj/bad');
+        foreach ($badSongs as $badSong) {
+            if (strpos($badSong, $song) !== false) {
+                return false;
+            }
+        }
+
+        $nopeSongs = file('/etc/mpdj/nope');
+        foreach ($nopeSongs as $nope) {
+            if (strpos($nopeSong, $song) !== false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function isFile(&$song)
