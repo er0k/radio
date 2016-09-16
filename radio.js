@@ -1,4 +1,4 @@
-var radio = angular.module('radio', ['ngAnimate','ui.bootstrap']);
+var radio = angular.module('radio', ['ngAnimate','ui.bootstrap','dndLists']);
 
 radio.factory('mpd', function($http) {
     return {
@@ -57,6 +57,10 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
                 $scope.song = data.song;
                 $scope.listeners = data.listeners;
                 $scope.playlist = data.playlist;
+                $scope.playlist.forEach(function(song, i) {
+                    $scope.playlist[i]['pathParts'] = getPathParts(song.file);
+                });
+                updateTitle();
                 $scope.xfadeStatus = $scope.status.xfade != null ? 1 : 0;
                 $scope.total = parseInt($scope.song.time);
                 $scope.startCountingAt($scope.status.elapsed);
@@ -254,6 +258,13 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         mpd.sendCommand('crossfade', [xfade]);
     };
 
+    $scope.move = function(pos, item) {
+        oldPos = parseInt(item.pos);
+        if (pos > oldPos) --pos;
+        mpd.sendCommand('move', [oldPos, pos]);
+        return false;
+    }
+
     $scope.moveUp = function(pos) {
         // use 'moveid' here when I finally switch to dnd
         // moving by pos can cause problems with multiple clients
@@ -311,6 +322,22 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
 
         return {path: path, name: name}
     }
+
+    function updateTitle() {
+        var title = '';
+        if ('name' in $scope.song) {
+            title = $scope.song.name;
+        }
+        if ('title' in $scope.song) {
+            title = $scope.song.title;
+        }
+        if ('artist' in $scope.song) {
+            title = $scope.song.artist + ' - ' + title;
+        }
+        document.title = title;
+        // this doesn't seem to work for some reason
+    }
+
 
     $scope.refresh();
     $scope.idle();
