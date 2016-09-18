@@ -43,7 +43,7 @@ radio.factory('mpd', function($http) {
 radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
 
     var statusTimeout = 3000;
-    var progressTimeout = 1000;
+    var progressTimeout = 200;
     var songId = 0;
     var elapsed = 0;
     var timer;
@@ -73,11 +73,11 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         time = time || 0
         $interval.cancel(timer);
         $scope.elapsed = parseFloat(time);
-        timer = $interval(count, 1000);
+        timer = $interval(count, progressTimeout);
     };
 
     function count() {
-        $scope.elapsed += 1;
+        $scope.elapsed += (progressTimeout / 1000);
         if (isNaN($scope.total) || $scope.elapsed > $scope.total) {
             $scope.total = $scope.elapsed;
         }
