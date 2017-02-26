@@ -131,6 +131,9 @@
                     </form>
                     <div class="results">
                         <h4>{{resultsCount}} results</h4>
+                        <div class="control">
+                            <button class="add btn btn-sm btn-default" ng-click="search(searchFor.type, searchFor.what, true)">add all</button>
+                        </div>
                         <ul class="items">
                             <li ng-repeat="result in results track by $index">
                                 <span class="file" ng-repeat="part in result.parts">

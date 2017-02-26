@@ -158,15 +158,17 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         $scope.search('modified-since', lastWeek);
     };
 
-    $scope.search = function(type, what) {
+    $scope.search = function(type, what, add) {
         type = type || 'any';
         what = what || '';
+        add = add || false;
         mpd.addAlert('warning', 'loading...', 30000);
         $scope.activeTab = 3;
         $scope.results = {};
         $scope.resultsCount = '?';
         $scope.searchFor = { type: type, what: what };
-        mpd.sendCommand('search', [type, what]).then(function(data) {
+        var command = add ? 'searchadd' : 'search';
+        mpd.sendCommand(command, [type, what]).then(function(data) {
             var searchResults = [];
             if (data.length > 0) {
                 data.forEach(function(item) {
