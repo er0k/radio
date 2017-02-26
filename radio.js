@@ -150,6 +150,14 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         });
     };
 
+    $scope.findRecent = function(interval) {
+        var recent = new Date();
+        recent.setDate(recent.getDate() - interval);
+        var lastWeek = recent.toISOString().split('.')[0]+"Z";
+        console.log(lastWeek);
+        $scope.search('modified-since', lastWeek);
+    };
+
     $scope.search = function(type, what) {
         type = type || 'any';
         what = what || '';
@@ -184,6 +192,8 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
             var params = { url: stream, dl: true, info: true }
             $http.post('youtube.php', params).then(function(response) {
                 if (response.data) {
+                    // TODO: need to make sure stream is not empty!
+                    // or else mpd will add EVERYTHING and crash and burn!
                     $scope.add(response.data.stream);
                     mpd.addAlert('success', response.data.info.title, 3000);
                     console.log(response.data.info);
@@ -209,7 +219,7 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         mpd.sendCommand('seekcur', [time]).then(function() {
             $scope.elapsed = time;
         });
-    }; 
+    };
 
     $scope.closeAlert = function(index) {
         mpd.alerts.splice(index, 1);

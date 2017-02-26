@@ -2,6 +2,7 @@
 
 $m = json_decode(file_get_contents('php://input'), true);
 
+
 $cmd = isset($m['cmd']) ? $m['cmd'] : exit();
 unset($m['cmd']);
 ksort($m);

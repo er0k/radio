@@ -32,6 +32,9 @@
                 <span class="listeners">({{listeners.count}} listeners)</span>
                 <div class="filename">{{song.file}}</div>
             </span>
+
+
+
             <span class="control">
                 <button class="btn btn-default btn-sm" ng-click="refresh()">&#x21ba;</button>
                 <button class="btn btn-danger btn-sm" ng-click="nope()">NOPE</button>
@@ -41,6 +44,11 @@
                 <button class="btn btn-default btn-sm" ng-click="crop()">crop</button>
                 <button class="btn btn-default btn-sm" ng-click="addRandom(count)">add random ({{count}})</button>
                 <button class="btn btn-default btn-sm" ng-click="count=count+1">+</button>
+            </span>
+
+            <span class="recent">
+                <a ng-click="findRecent(7)" href="#">last week</a>
+                <a ng-click="findRecent(30)" href="#">last month</a>
             </span>
         </div>
 
