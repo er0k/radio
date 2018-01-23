@@ -19,23 +19,16 @@
 
     <div class="container">
 
-        <div class="current">
-            <uib-progressbar id="progressbar" max="total" value="elapsed" ng-click="progress($event)">
-                <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
-            </uib-progressbar>
+        <div class="row">
+            <div class="col-12">
+                <uib-progressbar id="progressbar" max="total" value="elapsed" ng-click="progress($event)">
+                    <span>{{hmElapsed}} / {{hmTotal}} ({{percent}}%)</span>
+                </uib-progressbar>
+            </div>
+        </div>
 
-            <span class="info">
-                {{song.name}}<br />
-                <a ng-click="search('Artist', song.artist)" href="#">{{song.artist}}</a> -
-                <a ng-click="search('Title', song.title)" href="#">{{song.title}}</a>
-                [<a ng-click="search('Album', song.album)" href="#">{{song.album}}</a>]
-                <span class="listeners">({{listeners.count}} listeners)</span>
-                <div class="filename">{{song.file}}</div>
-            </span>
-
-
-
-            <span class="control">
+        <div class="controls row">
+            <div class="col-12">
                 <button class="btn btn-default btn-sm" ng-click="refresh()">&#x21ba;</button>
                 <button class="btn btn-danger btn-sm" ng-click="nope()">NOPE</button>
                 <button class="btn btn-default btn-sm" ng-click="skip()">skip</button>
@@ -44,14 +37,31 @@
                 <button class="btn btn-default btn-sm" ng-click="crop()">crop</button>
                 <button class="btn btn-default btn-sm" ng-click="addRandom(count)">add random ({{count}})</button>
                 <button class="btn btn-default btn-sm" ng-click="count=count+1">+</button>
-            </span>
-
-            <span class="recent">
-                <a ng-click="findRecent(1)" href="#">last day</a>
-                <a ng-click="findRecent(7)" href="#">last week</a>
-                <a ng-click="findRecent(30)" href="#">last month</a>
-            </span>
+            </div>
         </div>
+
+        <div class="row">
+            <div class="info col-10">
+                <div ng-hide="song.name == null"><a href="{{song.file}}" target="_blank">{{song.name}}</a></div>
+                <span ng-hide="song.artist == null"><a ng-click="search('Artist', song.artist)" href="#">{{song.artist}}</a> -</span>
+                <span ng-hide="song.title == null"><a ng-click="search('Title', song.title)" href="#">{{song.title}}</a></span>
+                <span ng-hide="song.artist == null">[<a ng-click="search('Album', song.album)" href="#">{{song.album}}</a>]</span>
+
+                <div class="filename">{{song.file}}</div>
+            </div>
+            <div class="col-2">
+                <span class="listeners">({{listeners.count}} listeners)</span>
+            </div>
+        </div>
+
+
+
+
+        <span class="recent">
+            <a ng-click="findRecent(1)" href="#">last day</a>
+            <a ng-click="findRecent(7)" href="#">last week</a>
+            <a ng-click="findRecent(30)" href="#">last month</a>
+        </span>
 
         <br />
 

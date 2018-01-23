@@ -1,9 +1,17 @@
+
 .container {
     margin-top: 10px;
 }
 
 #progressbar {
     margin-bottom: 5px;
+}
+
+.controls button {
+    font-size: 1.5em;
+    height: 3em;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .btn-default.active {
@@ -44,19 +52,9 @@
     color: white;
 }
 
-.current .control,
-.playlist .control {
-    float: right;
-    margin-top: -33px;
-}
-
 .playlist .filename {
     max-width: 75%;
-}
-
-.current .filename {
-    max-width: 60%;
-    height: 20px;
+    font-size: 75%;
 }
 
 .browse .path {
@@ -95,10 +93,6 @@
 
 .recent {
     float: right;
-}
-
-.filename {
-    font-size: 75%;
 }
 
 .currentSong {
@@ -152,4 +146,39 @@
 .animate-repeat.ng-move.ng-move-active,
 .animate-repeat.ng-enter.ng-enter-active {
     opacity: 1;
+}
+
+
+
+
+/*@media only screen and (min-width: 1915px) {
+    .container {
+        background-color: black;
+        border: 5px solid red;
+    }
+}*/
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+[class*="col-"] {
+    float: left;
+    padding: 10px;
+}
+
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
 }

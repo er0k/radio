@@ -2,7 +2,7 @@
 
 require_once('MPD.php');
 
-class mpde extends MPD 
+class mpde extends MPD
 {
 
     const MUSIC_DIR = '/Music/';
@@ -18,6 +18,7 @@ class mpde extends MPD
         return true;
     }
 
+    // this shit doesn't work so good
     public function crop()
     {
         $status = $this->status();
@@ -29,6 +30,7 @@ class mpde extends MPD
             for ($length--; $length >= 0; $length--) {
                 if ($length != $this->getPosition()) {
                     $this->delete($length);
+                    usleep(2000);
                 }
             }
         }

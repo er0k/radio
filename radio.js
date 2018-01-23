@@ -6,7 +6,7 @@ radio.factory('mpd', function($http) {
         addAlert: function (type, msg, time) {
             type = type || 'info';
             msg = msg || 'o_O';
-            time = time || 5000;
+            time = time || 500;
             var alert = { type: type, msg: msg, time: time };
             this.alerts.push(alert);
         },
@@ -19,18 +19,14 @@ radio.factory('mpd', function($http) {
             }
             var self = this;
             return $http.post('m.php', params).then(function(response) {
-                // don't alert on these commands since they happen a lot
-                var nope = ['status','idle','playlistinfo','listplaylists','lsinfo','search'];
-                if (!nope.includes(cmd)) {
-                    if (typeof response.data.error === 'undefined') {
-                        if (response.data == true) {
-                            self.addAlert('success', cmd + ': OK', 3000);
-                        } else {
-                            self.addAlert('warning', cmd + ': ' + response.data, 5000);
-                        }
-                    } else {
-                        self.addAlert('danger', cmd + ': ' + response.data.error, 10000);
+                if (!response.data.error) {
+                    // don't alert on these commands since they happen a lot
+                    var nope = ['status','idle','playlistinfo','listplaylists','lsinfo','search'];
+                    if (!nope.includes(cmd)) {
+                        self.addAlert('success', cmd + ': OK', 1000);
                     }
+                } else {
+                    self.addAlert('danger', cmd + ': ' + response.data.error, 3000);
                 }
 
                 return response.data;
@@ -48,11 +44,28 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
     var elapsed = 0;
     var timer;
 
+    $scope.idle = function(timeout) {
+        timeout = timeout || 300;
+
+        setTimeout(function() {
+            mpd.sendCommand('idle').then(function(data) {
+                if (!data.error) {
+                    $scope.idle();
+                    $scope.update();
+                } else {
+                    $scope.idle(5000);
+                }
+            });
+        }, timeout);
+    };
+
     $scope.update = function(timeout) {
         timeout = timeout || 300;
         setTimeout(function() {
+            $scope.getElapsed();
             $http.get('/radio/mpdj.json').success(function(data) {
-                console.log(data)
+                // console.log(data)
+
                 $scope.status = data.status;
                 $scope.song = data.song;
                 $scope.listeners = data.listeners;
@@ -101,7 +114,6 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         $scope.save = {};
 
         $scope.update(0);
-        $scope.getElapsed(1000);
         mpd.addAlert();
     };
 
@@ -112,15 +124,6 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
                 $scope.startCountingAt(data.elapsed);
             });
         }, timeout);
-    };
-
-    $scope.idle = function() {
-        mpd.sendCommand('idle').then(function(data) {
-            console.log(data);
-            $scope.update();
-            $scope.idle();
-            // figure out the timeout
-        });
     };
 
     $scope.browse = function (path) {
