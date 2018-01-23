@@ -18,7 +18,7 @@ radio.factory('mpd', function($http) {
                 params[key] = args[i];
             }
             var self = this;
-            return $http.post('m.php', params).then(function(response) {
+            return $http.post('m.php?z=' + Math.random(), params).then(function(response) {
                 if (!response.data.error) {
                     // don't alert on these commands since they happen a lot
                     var nope = ['status','idle','playlistinfo','listplaylists','lsinfo','search'];
@@ -63,7 +63,7 @@ radio.controller('dj', function ($scope, $window, $http, $interval, mpd) {
         timeout = timeout || 300;
         setTimeout(function() {
             $scope.getElapsed();
-            $http.get('/radio/mpdj.json').success(function(data) {
+            $http.get('/radio/mpdj.json?z=' + Math.random()).success(function(data) {
                 // console.log(data)
 
                 $scope.status = data.status;
